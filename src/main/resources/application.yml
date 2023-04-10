@@ -1,0 +1,28 @@
+server:
+  port: 9092
+
+spring:
+  datasource:
+    url: jdbc:mysql://mingky.me/KUK?serverTimezone=Asia/Seoul&zeroDateTimeBehavior=CONVERT_TO_NULL&useFractionalSeconds=true&useUnicode=yes&characterEncoding=UTF-8&tinyInt1isBit=false&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
+    username: kuk
+    password: Qwpo1209
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+        order_inserts: true
+        order_updates: true
+
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
