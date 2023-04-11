@@ -10,17 +10,17 @@ import org.springframework.data.domain.Sort;
 @Getter
 @Setter
 public class SearchDiary extends PaginationDto {
-    private Long id;
-    private Member member;
+    private Long diaryId;
+    private Long memberId;
     private String title;
     private String weather;
     private String content;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public SearchDiary(Long id, Member member, String title, String weather, String content, Integer limit, Integer offset, String orderBy, Sort.Direction direction) {
+    public SearchDiary(Long diaryId, Long memberId, String title, String weather, String content, Integer limit, Integer offset, String orderBy, Sort.Direction direction) {
         super(limit, offset, orderBy, direction);
-        this.id = id;
-        this.member = member;
+        this.diaryId = diaryId;
+        this.memberId = memberId;
         this.title = title;
         this.weather = weather;
         this.content = content;

@@ -4,25 +4,27 @@ import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiary;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
+import com.secondWind.modooDiary.common.result.ResponseHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/diary")
 @RequiredArgsConstructor
 public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getDiaries(SearchDiary searchDiary) {
-        List<DiaryResponse> contents = diaryService.getDiaries(searchDiary);
-        return ResponseEntity.ok(contents);
+        Page<DiaryResponse> contents = diaryService.getDiaries(searchDiary);
+        return ResponseHandler.generate()
+                .data(contents)
+                .status(HttpStatus.OK)
+                .build();
     }
 
     @PostMapping("/write")

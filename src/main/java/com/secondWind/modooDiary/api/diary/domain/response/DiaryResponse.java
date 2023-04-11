@@ -7,24 +7,27 @@ import lombok.Data;
 @Data
 public class DiaryResponse {
     private Long id;
+    private String nickName;
     private String title;
     private String weather;
     private String content;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public DiaryResponse(Long id, String title, String weather, String content) {
+    public DiaryResponse(Long id, String nickName, String title, String weather, String content) {
         this.id = id;
+        this.nickName = nickName;
         this.title = title;
         this.weather = weather;
         this.content = content;
     }
 
-    public static DiaryResponse toResponse(SearchDiary searchDiary) {
+    public static DiaryResponse toResponse(DiaryResponse diaryResponse) {
         return of()
-                .id(searchDiary.getId())
-                .title(searchDiary.getTitle())
-                .weather(searchDiary.getWeather())
-                .content(searchDiary.getContent())
+                .id(diaryResponse.getId())
+                .nickName(diaryResponse.getNickName())
+                .title(diaryResponse.getTitle())
+                .weather(diaryResponse.getWeather())
+                .content(diaryResponse.getContent())
                 .build();
     }
 }

@@ -20,12 +20,10 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional
-    public List<DiaryResponse> getDiaries(SearchDiary searchDiary) {
+    public Page<DiaryResponse> getDiaries(SearchDiary searchDiary) {
         PageRequest pageRequest = PageRequest.of(searchDiary.getOffset(), searchDiary.getLimit(), searchDiary.getDirection(), searchDiary.getOrderBy());
 
-        Page<SearchDiary> diaries = diaryRepository.searchDiary(searchDiary, pageRequest);
-
-        return diaries.stream().map(DiaryResponse::toResponse).collect(Collectors.toList());
+        return diaryRepository.searchDiary(searchDiary, pageRequest);
     }
 
     @Override
