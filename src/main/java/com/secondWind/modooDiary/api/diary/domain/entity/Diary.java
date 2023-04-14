@@ -24,7 +24,7 @@ public class Diary {
     private String content;
     private int isDeleted;
 
-    @Builder
+    @Builder(builderMethodName = "of", builderClassName = "of")
     public Diary(Long diaryId, Member member, String title, String weather, String content, int isDeleted) {
         this.id = diaryId;
         this.member = member;

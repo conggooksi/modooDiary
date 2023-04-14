@@ -1,7 +1,7 @@
 package com.secondWind.modooDiary.api.diary.controller;
 
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
-import com.secondWind.modooDiary.api.diary.domain.request.WriteDiary;
+import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
@@ -28,9 +28,12 @@ public class DiaryController {
     }
 
     @PostMapping("/write")
-    public ResponseEntity<?> writeDiary(@RequestBody WriteDiary writeDiary) {
-        diaryService.writeDiary();
+    public ResponseEntity<?> writeDiary(@RequestBody WriteDiaryRequest writeDiaryRequest) {
+        Long diaryId = diaryService.writeDiary(writeDiaryRequest);
 
-        return null;
+        return ResponseHandler.generate()
+                .data(diaryId)
+                .status(HttpStatus.CREATED)
+                .build();
     }
 }
