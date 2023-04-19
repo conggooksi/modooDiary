@@ -33,4 +33,17 @@ public class Diary {
         this.content = content;
         this.isDeleted = isDeleted;
     }
+
+    @Builder(builderMethodName = "updateDiaryBuilder", builderClassName = "updateDiaryBuilder")
+    public void changeDiary(Member member, String title, String weather, String content) {
+        this.member = member;
+        this.title = title;
+        this.weather = weather;
+        this.content = content;
+    }
+
+//    @Builder(builderMethodName = "deleteDiaryBuilder", builderClassName = "deleteDiaryBuilder")
+    public void deleteDiary() {
+        this.isDeleted = 1;
+    }
 }

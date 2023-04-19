@@ -18,7 +18,7 @@ public class WriteDiaryRequest {
 
     private String content;
 
-    public static Diary writeDiary(WriteDiaryRequest writeDiaryRequest, Member member) {
+    public static Diary toEntity(WriteDiaryRequest writeDiaryRequest, Member member) {
         return Diary.of()
                 .title(writeDiaryRequest.title)
                 .weather(writeDiaryRequest.weather)
