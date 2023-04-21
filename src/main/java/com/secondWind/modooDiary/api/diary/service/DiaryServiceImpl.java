@@ -29,6 +29,8 @@ public class DiaryServiceImpl implements DiaryService {
 
     private final MemberRepository memberRepository;
 
+    private final DiaryDTOMapper diaryDTOMapper;
+
     @Override
     @Transactional
     public Page<DiaryResponse> getDiaries(SearchDiary searchDiary) {

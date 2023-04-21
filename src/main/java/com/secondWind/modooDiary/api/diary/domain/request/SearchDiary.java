@@ -1,6 +1,5 @@
 package com.secondWind.modooDiary.api.diary.domain.request;
 
-import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.dto.PaginationDto;
 import lombok.Builder;
 import lombok.Getter;
