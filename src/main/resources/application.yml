@@ -2,12 +2,14 @@ server:
   port: 9092
 
 spring:
+  jwt:
+    secret: de1e9266dd159fa1641bbb6661fb8479b9c8e12ccf9a571d82faa93f5947b84c479679a34839e2a6c6d3fbffbb8feb6e03ae0ebb0846c3464a1a211ee0cd5e04
+
   datasource:
     url: jdbc:mysql://mingky.me/KUK?serverTimezone=Asia/Seoul&zeroDateTimeBehavior=CONVERT_TO_NULL&useFractionalSeconds=true&useUnicode=yes&characterEncoding=UTF-8&tinyInt1isBit=false&rewriteBatchedStatements=true&profileSQL=true&logger=Slf4JLogger&maxQuerySizeToLog=999999
     username: kuk
     password: Qwpo1209
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: validate
@@ -21,6 +23,10 @@ spring:
 
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5Dialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 logging:
   level:

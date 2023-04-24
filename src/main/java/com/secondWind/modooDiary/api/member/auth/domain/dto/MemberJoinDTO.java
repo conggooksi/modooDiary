@@ -3,6 +3,7 @@ package com.secondWind.modooDiary.api.member.auth.domain.dto;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

@@ -11,7 +11,7 @@ public interface DiaryService {
 
     Long writeDiary(WriteDiaryRequest writeDiaryRequest);
 
-    Long updateDiary(UpdateDiaryRequest updateDiaryRequest);
+    Long updateDiary(Long diaryId, UpdateDiaryRequest updateDiaryRequest);
 
     void deleteDiary(Long diaryId);
 }

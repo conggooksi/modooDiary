@@ -55,8 +55,9 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional
-    public Long updateDiary(UpdateDiaryRequest updateDiaryRequest) {
-        Diary diary = findDiary(updateDiaryRequest.getDiaryId());
+    public Long updateDiary(Long diaryId, UpdateDiaryRequest updateDiaryRequest) {
+
+        Diary diary = findDiary(diaryId);
 
         Member member = memberRepository.findById(updateDiaryRequest.getMemberId()).orElseThrow(
                 () -> ApiException.builder()
@@ -65,13 +66,16 @@ public class DiaryServiceImpl implements DiaryService {
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
 
-        diary.updateDiaryBuilder()
-                .member(member)
-                .title(updateDiaryRequest.getTitle())
+
+        Diary.updateDiaryBuilder a = diary.updateDiaryBuilder();
+        if (true) {
+                a = a.member(member);
+
+        }
+        a.title(updateDiaryRequest.getTitle())
                 .weather(updateDiaryRequest.getWeather())
                 .content(updateDiaryRequest.getContent())
                 .build();
-
 
         return diary.getId();
     }

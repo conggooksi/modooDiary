@@ -7,6 +7,8 @@ import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,12 +47,12 @@ public class DiaryController {
     }
 
     @Operation(summary = "일기 수정 API")
-    @PatchMapping("")
-    public ResponseEntity<?> updateDiary(@Valid @RequestBody UpdateDiaryRequest updateDiaryRequest) {
-        Long diaryId = diaryService.updateDiary(updateDiaryRequest);
+    @PatchMapping("/{diary_id}")
+    public ResponseEntity<?> updateDiary(@PathVariable(value = "diary_id") Long diaryId, @Valid @RequestBody UpdateDiaryRequest updateDiaryRequest) {
+        Long updatedDiaryId = diaryService.updateDiary(diaryId, updateDiaryRequest);
 
         return ResponseHandler.generate()
-                .data(diaryId)
+                .data(updatedDiaryId)
                 .status(HttpStatus.OK)
                 .build();
     }

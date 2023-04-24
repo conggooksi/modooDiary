@@ -25,6 +25,9 @@ public class Member {
     @NotBlank
     private String nickName;
     private int isDeleted;
+
+    private String lastAccessToken;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaryList = new ArrayList<>();
 
@@ -37,5 +40,9 @@ public class Member {
         this.nickName = nickName;
         this.isDeleted = isDeleted;
         this.diaryList = diaryList;
+    }
+
+    public void changeLastAccessToken(String accessToken) {
+        this.lastAccessToken = accessToken;
     }
 }
