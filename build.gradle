@@ -81,7 +81,3 @@ configurations {
 compileQuerydsl{
 	options.annotationProcessorPath = configurations.querydsl
 }
-
-task cleanGeneatedDir(type: Delete) { // 인텔리제이 annotation processor 가 생성한 Q클래스가 clean 태스크로 삭제되는 게 불편하다면 둘 중에 하나를 선택
-	delete file("$buildDir/generated/querydsl")
-}
