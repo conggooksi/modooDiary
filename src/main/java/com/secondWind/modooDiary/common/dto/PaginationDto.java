@@ -12,9 +12,9 @@ public class PaginationDto {
     private Sort.Direction direction;
 
     public PaginationDto(Integer limit, Integer offset, String orderBy, Sort.Direction direction) {
-        this.limit = limit == null? 10 : limit ;
+        this.limit = limit == null? 10 : limit;
         this.offset = offset == null? 0 : offset;
         this.orderBy = orderBy == null? "id" : orderBy;
-        this.direction = direction == null? Sort.Direction.DESC : direction;
+        this.direction = direction == null? Sort.Direction.ASC : direction;
     }
 }

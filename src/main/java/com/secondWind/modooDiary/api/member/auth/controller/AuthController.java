@@ -4,6 +4,8 @@ import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
@@ -100,4 +102,57 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "토큰 재발급 API")
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(@Valid @RequestBody TokenRequestDTO tokenRequestDTO) {
+        TokenDTO tokenDTO = authService.reissue(tokenRequestDTO);
+
+        return ResponseHandler.generate()
+                .data(tokenDTO)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @Operation(summary = "로그아웃 API")
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Valid @RequestBody TokenRequestDTO tokenRequestDTO) {
+        authService.logout(tokenRequestDTO);
+
+        return ResponseHandler.generate()
+                .data(null)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @Operation(summary = "비밀번호 변경 API")
+    @PatchMapping("/password")
+    public ResponseEntity<?> updatePassword(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        if (authorization != null) {
+            String authBasic = authorization.substring(BASIC_PREFIX.length());
+
+            String decodedAuthBasic = new String(Base64.getDecoder().decode(authBasic), StandardCharsets.UTF_8);
+            String[] authUserInfo = decodedAuthBasic.split(":");
+
+            String loginId = authUserInfo[0];
+            String password = authUserInfo[1];
+
+            PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
+            passwordUpdateRequest.setLoginId(loginId);
+            passwordUpdateRequest.setPassword(password);
+
+            authService.updatePassword(passwordUpdateRequest);
+
+            return ResponseHandler.generate()
+                    .data(null)
+                    .status(HttpStatus.OK)
+                    .build();
+        } else {
+            return ResponseHandler.failResultGenerate()
+                    .errorMessage(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getMessage())
+                    .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+    }
 }

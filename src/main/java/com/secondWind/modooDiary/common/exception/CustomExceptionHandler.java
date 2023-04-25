@@ -55,7 +55,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> exceptionHandler(HttpServletRequest request, final UsernameNotFoundException e) {
         return ResponseHandler.failResultGenerate()
                 .status(HttpStatus.UNAUTHORIZED)
-                .errorCode("NOT_FOUND_EMAIL")
+                .errorCode("NOT_FOUND_LOGIN_ID")
                 .errorMessage(e.getMessage())
                 .build();
     }

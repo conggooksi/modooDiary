@@ -1,11 +1,13 @@
 package com.secondWind.modooDiary.api.member.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.member.domain.enumerate.Authority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ public class Member {
     private String password;
     @NotBlank
     private String nickName;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
     private int isDeleted;
 
     private String lastAccessToken;
@@ -33,16 +37,21 @@ public class Member {
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public Member(Long id, String loginId, String password, String nickName, int isDeleted, List<Diary> diaryList) {
+    public Member(Long id, String loginId, String password, String nickName, Authority authority, int isDeleted, List<Diary> diaryList) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.nickName = nickName;
+        this.authority = authority;
         this.isDeleted = isDeleted;
         this.diaryList = diaryList;
     }
 
     public void changeLastAccessToken(String accessToken) {
         this.lastAccessToken = accessToken;
+    }
+
+    public void changePassword(String password, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
     }
 }

@@ -20,8 +20,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String exception = (String) request.getAttribute("exception");
 
-        log.info(exception);
-
         if (exception == null) {
             setResponse(response, AuthErrorCode.UNKNOWN_ERROR);
         }
