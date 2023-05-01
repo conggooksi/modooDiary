@@ -1,19 +1,13 @@
-buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-	}
-}
-
 plugins {
 	id 'org.springframework.boot' version '3.0.5'
 	id 'io.spring.dependency-management' version '1.1.0'
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 	id 'java'
+//	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.modoodaiary'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "17.PREVIEW"
+sourceCompatibility = "17"
 
 configurations {
 	compileOnly {
@@ -31,25 +25,24 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Querydsl 추가 시작
+	// == 스프링 부트 3.0 이상 ==
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	// Querydsl 추가 끝
 
-	// test시에도 query dsl 모델을 사용하기 위해서는 해당 옵션을 추가 해줘야 한다.
-	testCompileOnly("org.projectlombok:lombok")
-	testAnnotationProcessor("org.projectlombok:lombok")
-
-	compileOnly 'org.projectlombok:lombok'
+//    compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
+
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
-
-	testImplementation group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -59,25 +52,22 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
-
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+
+// === ⭐ QueryDsl 빌드 옵션 (선택) ===
 def querydslDir = "$buildDir/generated/querydsl"
 
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
 sourceSets {
-	main.java.srcDir querydslDir
+	main.java.srcDirs += [ querydslDir ]
 }
 
-configurations {
-	querydsl.extendsFrom compileClasspath
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
-compileQuerydsl{
-	options.annotationProcessorPath = configurations.querydsl
+clean.doLast {
+	file(querydslDir).deleteDir()
 }
