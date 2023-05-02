@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.member.auth.domain.dto;
 
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
+import com.secondWind.modooDiary.api.member.domain.enumerate.Authority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -24,7 +25,7 @@ public class MemberJoinDTO {
                 .loginId(memberJoinDTO.getLoginId())
                 .password(passwordEncoder.encode(memberJoinDTO.getPassword()))
                 .nickName(memberJoinDTO.getNickName())
+                .authority(Authority.ROLE_USER)
                 .build();
     }
-
 }
