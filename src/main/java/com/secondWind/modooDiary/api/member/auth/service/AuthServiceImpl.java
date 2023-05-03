@@ -66,7 +66,6 @@ public class AuthServiceImpl implements AuthService{
 
         memberRepository.save(member);
 
-
         return MemberResponseDTO.toResponse(member);
     }
 
