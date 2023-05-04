@@ -1,7 +1,8 @@
 package com.secondWind.modooDiary.api.member.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
-import com.secondWind.modooDiary.api.member.domain.enumerate.Authority;
+import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
+import com.secondWind.modooDiary.common.enumerate.Authority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public class Member {
     private String password;
     @NotBlank
     private String nickName;
+
+    @Enumerated(EnumType.STRING)
+    private Region region;
     @Enumerated(EnumType.STRING)
     private Authority authority;
     private int isDeleted;
@@ -37,11 +41,12 @@ public class Member {
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public Member(Long id, String loginId, String password, String nickName, Authority authority, int isDeleted, List<Diary> diaryList) {
+    public Member(Long id, String loginId, String password, String nickName, Region region, Authority authority, int isDeleted, List<Diary> diaryList) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.nickName = nickName;
+        this.region = region;
         this.authority = authority;
         this.isDeleted = isDeleted;
         this.diaryList = diaryList;

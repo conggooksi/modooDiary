@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.diary.domain.entity;
 
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
+import com.secondWind.modooDiary.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @Getter
 @Where(clause = "is_deleted = false")
-public class Diary {
+public class Diary extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")

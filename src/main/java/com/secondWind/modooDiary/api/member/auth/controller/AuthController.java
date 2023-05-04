@@ -6,6 +6,7 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
     private final AuthService authService;

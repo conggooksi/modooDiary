@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+/map(org.gradle.api.file.Directory property(org.gradle.api.file.Directory, fixed(class org.gradle.api.internal.file.DefaultFilePropertyFactory$FixedDirectory, /Users/kuki/study/modooDiary/build)) org.gradle.api.internal.file.DefaultFilePropertyFactory$PathToDirectoryTransformer@157708e1)/com/secondWind/modooDiary/api/diary/domain/entity/QDiary.java
+/src/main/generated/com/secondWind/modooDiary/api/diary/domain/entity/QDiary.java
+/src/querydsl/java/com/secondWind/modooDiary/api/diary/domain/entity/QDiary.java
+/map(org.gradle.api.file.Directory property(org.gradle.api.file.Directory, fixed(class org.gradle.api.internal.file.DefaultFilePropertyFactory$FixedDirectory, /Users/kuki/study/modooDiary/build)) org.gradle.api.internal.file.DefaultFilePropertyFactory$PathToDirectoryTransformer@157708e1)/com/secondWind/modooDiary/api/member/domain/entity/QMember.java
+/src/main/generated/com/secondWind/modooDiary/api/member/domain/entity/QMember.java
+/src/querydsl/java/com/secondWind/modooDiary/api/member/domain/entity/QMember.java
+/기상청41_단기예보 조회서비스_오픈API활용가이드_최종/~$기상청41_단기예보 조회서비스_오픈API활용가이드_격자_위경도(20221027).xlsx
+/기상청41_단기예보 조회서비스_오픈API활용가이드_최종/~$청41_단기예보 조회서비스_오픈API활용가이드_최종.docx
+/기상청41_단기예보 조회서비스_오픈API활용가이드_최종/기상청41_단기예보 조회서비스_오픈API활용가이드_격자_위경도(20221027).xlsx
+/기상청41_단기예보 조회서비스_오픈API활용가이드_최종/기상청41_단기예보 조회서비스_오픈API활용가이드_최종.docx

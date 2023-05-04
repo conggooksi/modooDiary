@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService{
 
         passwordSpecification.check(memberJoinDTO.getPassword());
 
-        if (memberRepository.existsByLoginId(memberJoinDTO.getLoginId())) {
+        if (memberRepository.existsByLoginIdAndIsDeletedFalse(memberJoinDTO.getLoginId())) {
             throw new CustomAuthException(JsonResultData
                     .failResultBuilder()
                     .errorMessage(AuthErrorCode.ALREADY_JOIN_USER.getMessage())
@@ -61,9 +61,7 @@ public class AuthServiceImpl implements AuthService{
                     .build());
         }
 
-
         Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
-
         memberRepository.save(member);
 
         return MemberResponseDTO.toResponse(member);

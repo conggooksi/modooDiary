@@ -9,6 +9,7 @@ import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
+import com.secondWind.modooDiary.common.component.WeatherSubscriber;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
@@ -28,6 +29,8 @@ public class DiaryServiceImpl implements DiaryService {
     private final DiaryRepository diaryRepository;
 
     private final MemberRepository memberRepository;
+
+    private final WeatherSubscriber weatherSubscriber;
 
     private final DiaryDTOMapper diaryDTOMapper;
 
@@ -49,6 +52,8 @@ public class DiaryServiceImpl implements DiaryService {
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
 
+        String weatherStatus = weatherSubscriber.getWeatherStatus(member.getRegion());
+        writeDiaryRequest.setWeather(weatherStatus);
 
         return diaryRepository.save(WriteDiaryRequest.toEntity(writeDiaryRequest, member)).getId();
     }
