@@ -68,7 +68,7 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                 }
             }
         }
-        return new OrderSpecifier<>(Order.ASC, diary.id);
+        return new OrderSpecifier<>(Order.DESC, diary.id);
     }
 
     private BooleanExpression diaryWeatherEq(String weather) {
