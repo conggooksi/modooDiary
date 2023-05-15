@@ -22,11 +22,13 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
     @NotBlank
-    private String loginId;
+    private String email;
     @NotBlank
     private String password;
     @NotBlank
     private String nickName;
+
+    private String picture;
 
     @Enumerated(EnumType.STRING)
     private Region region;
@@ -41,11 +43,12 @@ public class Member {
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public Member(Long id, String loginId, String password, String nickName, Region region, Authority authority, int isDeleted, List<Diary> diaryList) {
+    public Member(Long id, String email, String password, String nickName, String picture, Region region, Authority authority, int isDeleted, List<Diary> diaryList) {
         this.id = id;
-        this.loginId = loginId;
+        this.email = email;
         this.password = password;
         this.nickName = nickName;
+        this.picture = picture;
         this.region = region;
         this.authority = authority;
         this.isDeleted = isDeleted;
@@ -58,5 +61,12 @@ public class Member {
 
     public void changePassword(String password, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
+    }
+
+    public Member update(String name, String picture) {
+        return Member.of()
+                .nickName(name)
+                .picture(picture)
+                .build();
     }
 }

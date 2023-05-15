@@ -9,18 +9,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @NoArgsConstructor
 public class MemberLoginDTO {
 
-    private String loginId;
+    private String email;
     private String password;
     private Boolean isAdmin;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public MemberLoginDTO(String loginId, String password, Boolean isAdmin) {
-        this.loginId = loginId;
+    public MemberLoginDTO(String email, String password, Boolean isAdmin) {
+        this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(loginId, password);
+        return new UsernamePasswordAuthenticationToken(email, password);
     }
 }

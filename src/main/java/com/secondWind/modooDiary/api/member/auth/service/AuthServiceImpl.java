@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService{
 
         passwordSpecification.check(memberJoinDTO.getPassword());
 
-        if (memberRepository.existsByLoginIdAndIsDeletedFalse(memberJoinDTO.getLoginId())) {
+        if (memberRepository.existsByEmailAndIsDeletedFalse(memberJoinDTO.getEmail())) {
             throw new CustomAuthException(JsonResultData
                     .failResultBuilder()
                     .errorMessage(AuthErrorCode.ALREADY_JOIN_USER.getMessage())
@@ -128,7 +128,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public void updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
-        Member member = memberRepository.findByLoginId(passwordUpdateRequest.getLoginId())
+        Member member = memberRepository.findByEmail(passwordUpdateRequest.getEmail())
                 .orElseThrow(() -> ApiException.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())

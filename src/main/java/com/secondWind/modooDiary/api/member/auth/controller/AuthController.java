@@ -46,10 +46,10 @@ public class AuthController {
 
             String[] authUserInfo = decodedAuthBasic.split(":");
 
-            String loginId = authUserInfo[0];
+            String email = authUserInfo[0];
             String password = authUserInfo[1];
 
-            memberJoinDTO.setLoginId(loginId);
+            memberJoinDTO.setEmail(email);
             memberJoinDTO.setPassword(password);
 
             MemberResponseDTO nickName = authService.signup(memberJoinDTO);
@@ -81,11 +81,11 @@ public class AuthController {
             String decodeAuthBasic = new String(Base64.getDecoder().decode(authBasic), StandardCharsets.UTF_8);
             String[] authUserInfo = decodeAuthBasic.split(":");
 
-            String loginId = authUserInfo[0];
+            String email = authUserInfo[0];
             String password = authUserInfo[1];
 
             MemberLoginDTO memberLoginDTO = MemberLoginDTO.of()
-                    .loginId(loginId)
+                    .email(email)
                     .password(password)
                     .isAdmin(isAdmin)
                     .build();
@@ -137,11 +137,11 @@ public class AuthController {
             String decodedAuthBasic = new String(Base64.getDecoder().decode(authBasic), StandardCharsets.UTF_8);
             String[] authUserInfo = decodedAuthBasic.split(":");
 
-            String loginId = authUserInfo[0];
+            String email = authUserInfo[0];
             String password = authUserInfo[1];
 
             PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
-            passwordUpdateRequest.setLoginId(loginId);
+            passwordUpdateRequest.setEmail(email);
             passwordUpdateRequest.setPassword(password);
 
             authService.updatePassword(passwordUpdateRequest);

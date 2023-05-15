@@ -25,16 +25,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String loginId = authentication.getName();
+        String email = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
         if (isNotMatchers(password, userDetails.getPassword())) {
             HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
             request.setAttribute("exception", AuthErrorCode.NOT_MATCH_PASSWORD.getCode());
 
-            throw new BadCredentialsException(loginId);
+            throw new BadCredentialsException(email);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

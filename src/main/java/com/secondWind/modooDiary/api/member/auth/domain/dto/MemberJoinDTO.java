@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class MemberJoinDTO {
 
     @Setter
-    private String loginId;
+    private String email;
 
     @Setter
     private String password;
@@ -24,7 +24,7 @@ public class MemberJoinDTO {
 
     public Member toMember(MemberJoinDTO memberJoinDTO, PasswordEncoder passwordEncoder) {
         return Member.of()
-                .loginId(memberJoinDTO.getLoginId())
+                .email(memberJoinDTO.getEmail())
                 .password(passwordEncoder.encode(memberJoinDTO.getPassword()))
                 .nickName(memberJoinDTO.getNickName())
                 .region(!memberJoinDTO.getRegion().isBlank() ? Region.valueOf(memberJoinDTO.getRegion()) : Region.SEOUL)
