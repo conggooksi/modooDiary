@@ -139,7 +139,13 @@ public class AuthServiceImpl implements AuthService{
     }
 
     private TokenDTO getTokenDTO(Authentication authentication) {
-        TokenDTO tokenDTO = jwtTokenProvider.generateTokenDTO(authentication);
+        Optional<Member> optionalMember = memberRepository.findById(Long.valueOf(authentication.getName()));
+        String nickName = null;
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            nickName = member.getNickName();
+        }
+        TokenDTO tokenDTO = jwtTokenProvider.generateTokenDTO(authentication, nickName);
 
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(),
@@ -147,7 +153,6 @@ public class AuthServiceImpl implements AuthService{
                         tokenDTO.getAccessTokenExpiresIn(),
                         TimeUnit.MILLISECONDS);
 
-        Optional<Member> optionalMember = memberRepository.findById(Long.valueOf(authentication.getName()));
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             member.changeLastAccessToken(tokenDTO.getAccessToken());
