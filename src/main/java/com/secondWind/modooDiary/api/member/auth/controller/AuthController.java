@@ -71,7 +71,7 @@ public class AuthController {
     @Operation(summary = "로그인 API")
     @PostMapping("/login")
     public ResponseEntity<?> login(
-            @RequestHeader("isAdmin") Boolean isAdmin,
+            @RequestHeader(value = "isAdmin", required = false) Boolean isAdmin,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization
             ) {
 
@@ -83,6 +83,10 @@ public class AuthController {
 
             String email = authUserInfo[0];
             String password = authUserInfo[1];
+
+            if (isAdmin == null) {
+                isAdmin = false;
+            }
 
             MemberLoginDTO memberLoginDTO = MemberLoginDTO.of()
                     .email(email)
