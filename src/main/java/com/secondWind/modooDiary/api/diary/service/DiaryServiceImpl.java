@@ -5,6 +5,7 @@ import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
+import com.secondWind.modooDiary.api.diary.domain.response.DiaryDetail;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
@@ -31,8 +32,6 @@ public class DiaryServiceImpl implements DiaryService {
     private final MemberRepository memberRepository;
 
     private final WeatherSubscriber weatherSubscriber;
-
-    private final DiaryDTOMapper diaryDTOMapper;
 
     @Override
     @Transactional
@@ -91,6 +90,11 @@ public class DiaryServiceImpl implements DiaryService {
         Diary diary = findDiary(diaryId);
 
         diary.deleteDiary();
+    }
+
+    @Override
+    public DiaryDetail getDiary(Long id) {
+        return DiaryDetail.toDto(findDiary(id));
     }
 
     private Diary findDiary(Long diaryId) {

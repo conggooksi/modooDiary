@@ -3,14 +3,11 @@ package com.secondWind.modooDiary.api.diary.controller;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
+import com.secondWind.modooDiary.api.diary.domain.response.DiaryDetail;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
-import com.secondWind.modooDiary.common.component.WeatherSubscriber;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
-import com.secondWind.modooDiary.common.result.WeatherResultResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(name = "diary", description = "일기 API")
 @RestController
@@ -40,6 +32,16 @@ public class DiaryController {
         Page<DiaryResponse> contents = diaryService.getDiaries(searchDiary);
         return ResponseHandler.generate()
                 .data(contents)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @Operation(summary = "일기 상세 조회 API")
+    @GetMapping("/{diary_id}")
+    public ResponseEntity<?> getDiary(@PathVariable(value = "diary_id") Long id) {
+        DiaryDetail diaryDetail = diaryService.getDiary(id);
+        return ResponseHandler.generate()
+                .data(diaryDetail)
                 .status(HttpStatus.OK)
                 .build();
     }
