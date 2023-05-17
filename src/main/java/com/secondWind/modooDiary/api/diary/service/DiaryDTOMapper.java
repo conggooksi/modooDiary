@@ -15,6 +15,8 @@ public class DiaryDTOMapper implements Function<Diary, DiaryResponse> {
                 diary.getMember().getNickName(),
                 diary.getTitle(),
                 diary.getWeather(),
-                diary.getContent());
+                diary.getContent(),
+                diary.getCreatedDate(),
+                diary.getLastModifiedDate());
     }
 }
