@@ -23,16 +23,27 @@ public class Diary extends BaseEntity {
     private String title;
     private String weather;
     private String content;
+    private int recommendCount;
     private int isDeleted;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public Diary(Long diaryId, Member member, String title, String weather, String content, int isDeleted) {
+    public Diary(Long diaryId, Member member, String title, String weather, String content, int recommendCount,int isDeleted) {
         this.id = diaryId;
         this.member = member;
         this.title = title;
         this.weather = weather;
         this.content = content;
+        this.recommendCount = recommendCount;
         this.isDeleted = isDeleted;
+    }
+
+    @Builder(builderMethodName = "createDiaryBuilder", builderClassName = "createDiaryBuilder")
+    public Diary(Member member, String title, String weather, String content) {
+        this.member = member;
+        this.title = title;
+        this.weather = weather;
+        this.content = content;
+        this.recommendCount = 0;
     }
 
     @Builder(builderMethodName = "updateDiaryBuilder", builderClassName = "updateDiaryBuilder")
@@ -46,5 +57,13 @@ public class Diary extends BaseEntity {
 //    @Builder(builderMethodName = "deleteDiaryBuilder", builderClassName = "deleteDiaryBuilder")
     public void deleteDiary() {
         this.isDeleted = 1;
+    }
+
+    public void plusRecommendCount() {
+        this.recommendCount++;
+    }
+
+    public void minusRecommendCount() {
+        this.recommendCount--;
     }
 }

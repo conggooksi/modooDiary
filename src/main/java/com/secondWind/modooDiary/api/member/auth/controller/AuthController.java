@@ -64,7 +64,6 @@ public class AuthController {
                     .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
-
         }
     }
 

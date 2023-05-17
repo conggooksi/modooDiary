@@ -4,7 +4,6 @@ import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
-import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 @Data
@@ -19,8 +18,8 @@ public class WriteDiaryRequest {
 
     private String content;
 
-    public static Diary toEntity(WriteDiaryRequest writeDiaryRequest, Member member) {
-        return Diary.of()
+    public static Diary createDiary(WriteDiaryRequest writeDiaryRequest, Member member) {
+        return Diary.createDiaryBuilder()
                 .title(writeDiaryRequest.title)
                 .weather(writeDiaryRequest.weather)
                 .content(writeDiaryRequest.content)

@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.api.diary.controller;
 
+import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
@@ -76,6 +77,16 @@ public class DiaryController {
         return ResponseHandler.generate()
                 .data(null)
                 .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @Operation(summary = "일기 좋아요 API")
+    @PutMapping("/recommend")
+    public ResponseEntity<?> updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest) {
+        diaryService.updateDiaryRecommend(diaryRecommendRequest);
+        return ResponseHandler.generate()
+                .data(null)
+                .status(HttpStatus.OK)
                 .build();
     }
 }

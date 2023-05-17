@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.api.diary.service;
 
+import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
@@ -17,4 +18,6 @@ public interface DiaryService {
     void deleteDiary(Long diaryId);
 
     DiaryDetail getDiary(Long id);
+
+    void updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest);
 }
