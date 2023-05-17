@@ -35,7 +35,9 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         member.nickName,
                         diary.title,
                         diary.weather,
-                        diary.content))
+                        diary.content,
+                        diary.createdDate,
+                        diary.lastModifiedDate))
                 .from(diary)
                 .innerJoin(diary.member, member)
                 .where(memberIdEq(searchDiary.getMemberId()),
@@ -65,6 +67,10 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         return new OrderSpecifier<>(direction, diary.title);
                     case "weather":
                         return new OrderSpecifier<>(direction, diary.weather);
+                    case "createdTime":
+                        return new OrderSpecifier<>(direction, diary.createdDate);
+                    case "updatedTime":
+                        return new OrderSpecifier<>(direction, diary.lastModifiedDate);
                 }
             }
         }
