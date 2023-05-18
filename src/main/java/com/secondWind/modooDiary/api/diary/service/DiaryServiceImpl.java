@@ -52,9 +52,10 @@ public class DiaryServiceImpl implements DiaryService {
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
-
-        String weatherStatus = weatherSubscriber.getWeatherStatus(member.getRegion());
-        writeDiaryRequest.setWeather(weatherStatus);
+        if (writeDiaryRequest.getWeather() == null || writeDiaryRequest.getWeather().isBlank()) {
+            String weatherStatus = weatherSubscriber.getWeatherStatus(member.getRegion());
+            writeDiaryRequest.setWeather(weatherStatus);
+        }
 
         return diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
     }
