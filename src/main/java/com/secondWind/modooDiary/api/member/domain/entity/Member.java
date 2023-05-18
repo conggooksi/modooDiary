@@ -69,4 +69,12 @@ public class Member {
                 .picture(picture)
                 .build();
     }
+
+    public void changeNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void changeRegion(String region) {
+        this.region = Region.valueOf(region);
+    }
 }

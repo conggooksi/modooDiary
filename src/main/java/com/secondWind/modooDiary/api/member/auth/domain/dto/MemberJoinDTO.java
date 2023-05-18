@@ -36,7 +36,7 @@ public class MemberJoinDTO {
                 .email(memberJoinDTO.getEmail())
                 .password(passwordEncoder.encode(memberJoinDTO.getPassword()))
                 .nickName(memberJoinDTO.getNickName())
-                .region(((memberJoinDTO.getRegion() != null) && (!memberJoinDTO.getRegion().isBlank()))  ? Region.valueOf(memberJoinDTO.getRegion()) : Region.SEOUL)
+                .region(((memberJoinDTO.getRegion() != null) && (!memberJoinDTO.getRegion().isBlank())) ? Region.valueOf(memberJoinDTO.getRegion()) : Region.SEOUL)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

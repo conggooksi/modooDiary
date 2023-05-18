@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .shouldFilterAllDispatcherTypes(false)
                         .requestMatchers(AUTH_WHITELIST)
                         .permitAll()
+                        .requestMatchers("/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET)
                         .permitAll()
                         .anyRequest()

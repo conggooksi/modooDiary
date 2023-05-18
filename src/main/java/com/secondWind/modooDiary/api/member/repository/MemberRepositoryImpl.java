@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
 import com.secondWind.modooDiary.api.member.domain.dto.request.MemberSearch;
+import com.secondWind.modooDiary.api.member.domain.dto.response.MemberDetail;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.secondWind.modooDiary.api.diary.domain.entity.QDiary.diary;
 import static com.secondWind.modooDiary.api.member.domain.entity.QMember.member;
@@ -48,6 +50,21 @@ public class MemberRepositoryImpl implements MemberCustomRepository{
                 .where(member.isDeleted.eq(0));
 
         return PageableExecutionUtils.getPage(content, pageRequest, countQuery::fetchOne);
+    }
+
+    @Override
+    public Optional<MemberDetail> getMember(Long memberId) {
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(MemberDetail.class,
+                        member.id,
+                        member.email,
+                        member.nickName))
+                .from(member)
+                .where(memberIdEq(memberId))
+                .fetchOne());
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return memberId != null ? member.id.eq(memberId) : null;
     }
 
     private OrderSpecifier<?> memberSort(PageRequest pageRequest) {
