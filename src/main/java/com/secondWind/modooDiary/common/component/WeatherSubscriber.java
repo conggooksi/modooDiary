@@ -26,6 +26,7 @@ public class WeatherSubscriber {
         String time = currentDateTime.format(timeFormatter);
 
         int checkTime = Integer.parseInt(time);
+        checkTime += 900;
 
         if (checkTime % 100 < 30) {
             checkTime -= 100;
