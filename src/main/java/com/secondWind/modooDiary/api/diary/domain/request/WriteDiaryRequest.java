@@ -22,7 +22,7 @@ public class WriteDiaryRequest {
         return Diary.createDiaryBuilder()
                 .title(writeDiaryRequest.title)
                 .weather(writeDiaryRequest.weather)
-                .content(writeDiaryRequest.content)
+                .content((writeDiaryRequest.content != null && !writeDiaryRequest.content.isBlank()) ? writeDiaryRequest.content : "제곧내")
                 .member(member)
                 .build();
     }
