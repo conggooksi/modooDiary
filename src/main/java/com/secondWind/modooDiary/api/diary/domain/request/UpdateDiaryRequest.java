@@ -22,18 +22,12 @@ public class UpdateDiaryRequest {
     private String title;
 
     @Schema(nullable = true)
-    private String weather;
-
-    @Schema(nullable = true)
     private String content;
 
-    private boolean isAdmin;
-
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public UpdateDiaryRequest(Long memberId, String title, String weather, String content) {
+    public UpdateDiaryRequest(Long memberId, String title, String content) {
         this.memberId = memberId;
-        this.title = title;
-        this.weather = weather;
-        this.content = content;
+        if (title != null) this.title = title;
+        if (content != null) this.content = content;
     }
 }

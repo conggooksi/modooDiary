@@ -1,6 +1,5 @@
 package com.secondWind.modooDiary.api.member.domain.dto.response;
 
-import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

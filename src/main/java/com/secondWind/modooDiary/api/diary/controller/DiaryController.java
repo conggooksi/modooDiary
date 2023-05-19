@@ -40,7 +40,7 @@ public class DiaryController {
     @Operation(summary = "일기 상세 조회 API")
     @GetMapping("/{diary_id}")
     public ResponseEntity<?> getDiary(@PathVariable(value = "diary_id") Long id) {
-        DiaryDetail diaryDetail = diaryService.getDiary(id);
+        DiaryResponse diaryDetail = diaryService.getDiary(id);
         return ResponseHandler.generate()
                 .data(diaryDetail)
                 .status(HttpStatus.OK)

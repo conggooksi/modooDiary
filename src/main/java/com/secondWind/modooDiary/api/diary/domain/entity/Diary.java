@@ -21,13 +21,15 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
     private String title;
-    private String weather;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id")
+    private Weather weather;
     private String content;
     private int recommendCount;
     private int isDeleted;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public Diary(Long diaryId, Member member, String title, String weather, String content, int recommendCount,int isDeleted) {
+    public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount,int isDeleted) {
         this.id = diaryId;
         this.member = member;
         this.title = title;
@@ -38,7 +40,7 @@ public class Diary extends BaseEntity {
     }
 
     @Builder(builderMethodName = "createDiaryBuilder", builderClassName = "createDiaryBuilder")
-    public Diary(Member member, String title, String weather, String content) {
+    public Diary(Member member, String title, Weather weather, String content) {
         this.member = member;
         this.title = title;
         this.weather = weather;
@@ -47,11 +49,9 @@ public class Diary extends BaseEntity {
     }
 
     @Builder(builderMethodName = "updateDiaryBuilder", builderClassName = "updateDiaryBuilder")
-    public void changeDiary(Member member, String title, String weather, String content) {
-        this.member = member;
-        this.title = title;
-        this.weather = weather;
-        this.content = content;
+    public void changeDiary(String title, String content) {
+        if (title != null) this.title = title;
+        if (content != null) this.content = content;
     }
 
 //    @Builder(builderMethodName = "deleteDiaryBuilder", builderClassName = "deleteDiaryBuilder")

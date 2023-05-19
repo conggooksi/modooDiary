@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.member.auth.domain.dto;
 
-import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
+import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
+import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.enumerate.Authority;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class MemberJoinDTO {
                 .email(memberJoinDTO.getEmail())
                 .password(passwordEncoder.encode(memberJoinDTO.getPassword()))
                 .nickName(memberJoinDTO.getNickName())
-                .region(((memberJoinDTO.getRegion() != null) && (!memberJoinDTO.getRegion().isBlank())) ? Region.valueOf(memberJoinDTO.getRegion()) : Region.SEOUL)
+                .region(((memberJoinDTO.getRegion() != null) && (!memberJoinDTO.getRegion().isBlank())) ? OpenweatherRegion.fromString(memberJoinDTO.getRegion()) : OpenweatherRegion.SEOUL)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

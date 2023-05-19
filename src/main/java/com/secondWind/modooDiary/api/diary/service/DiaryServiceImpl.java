@@ -2,6 +2,7 @@ package com.secondWind.modooDiary.api.diary.service;
 
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
 import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
@@ -13,7 +14,8 @@ import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
-import com.secondWind.modooDiary.common.component.WeatherSubscriber;
+import com.secondWind.modooDiary.common.component.OpenWeatherMapSubscriber;
+import com.secondWind.modooDiary.common.component.PublicWeatherSubscriber;
 import com.secondWind.modooDiary.common.enumerate.Yn;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
@@ -25,6 +27,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,7 +36,8 @@ public class DiaryServiceImpl implements DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
-    private final WeatherSubscriber weatherSubscriber;
+    private final PublicWeatherSubscriber weatherSubscriber;
+    private final OpenWeatherMapSubscriber openWeatherMapSubscriber;
     private final DiaryRecommendRepository diaryRecommendRepository;
 
     @Override
@@ -52,8 +57,8 @@ public class DiaryServiceImpl implements DiaryService {
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
-        if (writeDiaryRequest.getWeather() == null || writeDiaryRequest.getWeather().isBlank()) {
-            String weatherStatus = weatherSubscriber.getWeatherStatus(member.getRegion());
+        if (writeDiaryRequest.getWeather() == null) {
+            Weather weatherStatus = openWeatherMapSubscriber.getWeatherStatus(member.getRegion());
             writeDiaryRequest.setWeather(weatherStatus);
         }
 
@@ -73,17 +78,16 @@ public class DiaryServiceImpl implements DiaryService {
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
 
-
-        Diary.updateDiaryBuilder a = diary.updateDiaryBuilder();
-        if (true) {
-                a = a.member(member);
-
-        }
-        a.title(updateDiaryRequest.getTitle())
-                .weather(updateDiaryRequest.getWeather())
+        diary.updateDiaryBuilder()
+                .title(updateDiaryRequest.getTitle())
                 .content(updateDiaryRequest.getContent())
                 .build();
 
+        if (diary.getContent().isBlank()) {
+            diary.updateDiaryBuilder()
+                    .content("제곧내")
+                    .build();
+        }
         return diary.getId();
     }
 
@@ -96,8 +100,13 @@ public class DiaryServiceImpl implements DiaryService {
     }
 
     @Override
-    public DiaryDetail getDiary(Long id) {
-        return DiaryDetail.toDto(findDiary(id));
+    public DiaryResponse getDiary(Long id) {
+        return diaryRepository.getDiary(id).orElseThrow(
+                () -> ApiException.builder()
+                        .errorMessage(DiaryErrorCode.NOT_FOUND_DIARY.getMessage())
+                        .errorCode(DiaryErrorCode.NOT_FOUND_DIARY.getCode())
+                        .status(HttpStatus.BAD_REQUEST)
+                        .build());
     }
 
     @Override

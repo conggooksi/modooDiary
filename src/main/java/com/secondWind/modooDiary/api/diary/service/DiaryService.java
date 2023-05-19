@@ -17,7 +17,7 @@ public interface DiaryService {
 
     void deleteDiary(Long diaryId);
 
-    DiaryDetail getDiary(Long id);
+    DiaryResponse getDiary(Long id);
 
     void updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest);
 }

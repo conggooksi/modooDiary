@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.diary.domain.request;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -14,7 +15,7 @@ public class WriteDiaryRequest {
     @Length(min = 1, message = "제목이 필요합니다.")
     private String title;
 
-    private String weather;
+    private Weather weather;
 
     private String content;
 

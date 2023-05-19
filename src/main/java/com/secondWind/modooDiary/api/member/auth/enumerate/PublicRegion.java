@@ -3,7 +3,7 @@ package com.secondWind.modooDiary.api.member.auth.enumerate;
 import lombok.Getter;
 
 @Getter
-public enum Region {
+public enum PublicRegion {
     SEOUL("서울", "60", "127"),
     BUSAN("부산", "98", "76"),
     INCHEON("인천", "55", "124"),
@@ -25,19 +25,19 @@ public enum Region {
     private final String nx;
     private final String ny;
 
-    public static Region getDefault() {
-        return Region.SEOUL;
+    public static PublicRegion getDefault() {
+        return PublicRegion.SEOUL;
     }
 
-    public static Region fromString(String region) {
+    public static PublicRegion fromString(String region) {
         try {
-            return Region.valueOf(region);
+            return PublicRegion.valueOf(region);
         } catch (IllegalArgumentException e) {
             return getDefault();
         }
     }
 
-    Region(String region, String nx, String ny) {
+    PublicRegion(String region, String nx, String ny) {
         this.region = region;
         this.nx = nx;
         this.ny = ny;

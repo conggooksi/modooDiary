@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.diary.domain.response;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +14,13 @@ public class DiaryDetail {
     private Long diaryId;
     private String nickName;
     private String title;
-    private String weather;
+    private Weather weather;
     private String content;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public DiaryDetail(Long diaryId, String nickName, String title, String weather, String content, LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public DiaryDetail(Long diaryId, String nickName, String title, Weather weather, String content, LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.diaryId = diaryId;
         this.nickName = nickName;
         this.title = title;

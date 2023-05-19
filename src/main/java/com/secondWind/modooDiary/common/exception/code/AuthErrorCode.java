@@ -8,6 +8,7 @@ public enum AuthErrorCode {
     PASSWORD_NOT_ENOUGH_CONDITION("PASSWORD_NOT_ENOUGH_CONDITION", "패스워드 조건을 만족하지 못했습니다."),
 
     ALREADY_JOIN_USER("ALREADY_JOIN_USER", "이미 존재하는 아이디입니다."),
+    DUPLICATE_NICKNAME("DUPLICATE_NICKNAME", "이미 존재하는 닉네임입니다."),
 
     NOT_AUTH_TOKEN("NOT_AUTH_TOKEN", "권한 정보가 없는 토큰입니다."),
     WRONG_TOKEN("WRONG_TOKEN", "잘못된 토큰입니다."),

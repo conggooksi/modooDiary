@@ -1,7 +1,8 @@
 package com.secondWind.modooDiary.api.member.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
-import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
+import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
+import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.common.enumerate.Authority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +32,7 @@ public class Member {
     private String picture;
 
     @Enumerated(EnumType.STRING)
-    private Region region;
+    private OpenweatherRegion region;
     @Enumerated(EnumType.STRING)
     private Authority authority;
     private int isDeleted;
@@ -43,7 +44,7 @@ public class Member {
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public Member(Long id, String email, String password, String nickName, String picture, Region region, Authority authority, int isDeleted, List<Diary> diaryList) {
+    public Member(Long id, String email, String password, String nickName, String picture, OpenweatherRegion region, Authority authority, int isDeleted, List<Diary> diaryList) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -75,6 +76,6 @@ public class Member {
     }
 
     public void changeRegion(String region) {
-        this.region = Region.valueOf(region);
+        this.region = OpenweatherRegion.valueOf(region);
     }
 }

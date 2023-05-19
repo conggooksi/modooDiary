@@ -4,10 +4,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +17,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.secondWind.modooDiary.api.diary.domain.entity.QDiary.diary;
+import static com.secondWind.modooDiary.api.diary.domain.entity.QWeather.weather;
 import static com.secondWind.modooDiary.api.member.domain.entity.QMember.member;
 
 @Repository
@@ -34,13 +35,14 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         diary.id,
                         member.nickName,
                         diary.title,
-                        diary.weather,
+                        weather.description,
                         diary.content,
                         diary.recommendCount,
                         diary.createdDate,
                         diary.lastModifiedDate))
                 .from(diary)
                 .innerJoin(diary.member, member)
+                .innerJoin(diary.weather, weather)
                 .where(memberIdEq(searchDiary.getMemberId()),
                         diaryTitleLike(searchDiary.getTitle()),
                         diaryWeatherEq(searchDiary.getWeather()))
@@ -56,6 +58,24 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
         return PageableExecutionUtils.getPage(content, pageRequest, countQuery::fetchOne);
     }
 
+    @Override
+    public Optional<DiaryResponse> getDiary(Long diaryId) {
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(DiaryResponse.class,
+                        diary.id,
+                        member.nickName,
+                        diary.title,
+                        weather.description,
+                        diary.content,
+                        diary.recommendCount,
+                        diary.createdDate,
+                        diary.lastModifiedDate))
+                .from(diary)
+                .innerJoin(diary.member, member)
+                .innerJoin(diary.weather, weather)
+                .where(diary.id.eq(diaryId))
+                .fetchOne());
+    }
+
     private OrderSpecifier<?> diarySort(PageRequest pageRequest) {
         if (!pageRequest.getSort().isEmpty()) {
             for (Sort.Order order : pageRequest.getSort()) {
@@ -67,7 +87,7 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                     case "title":
                         return new OrderSpecifier<>(direction, diary.title);
                     case "weather":
-                        return new OrderSpecifier<>(direction, diary.weather);
+                        return new OrderSpecifier<>(direction, weather.description);
                     case "createdTime":
                         return new OrderSpecifier<>(direction, diary.createdDate);
                     case "updatedTime":
@@ -78,8 +98,8 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
         return new OrderSpecifier<>(Order.DESC, diary.id);
     }
 
-    private BooleanExpression diaryWeatherEq(String weather) {
-        return StringUtils.hasText(weather)? diary.weather.eq(weather) : null;
+    private BooleanExpression diaryWeatherEq(String weatherSearch) {
+        return StringUtils.hasText(weatherSearch)? weather.description.eq(weatherSearch) : null;
     }
 
     private BooleanExpression diaryTitleLike(String title) {

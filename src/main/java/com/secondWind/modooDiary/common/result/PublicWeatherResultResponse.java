@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class WeatherResultResponse {
+public class PublicWeatherResultResponse {
     public Response response;
 
     @Data

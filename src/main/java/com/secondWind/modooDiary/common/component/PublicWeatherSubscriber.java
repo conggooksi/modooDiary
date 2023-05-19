@@ -1,7 +1,7 @@
 package com.secondWind.modooDiary.common.component;
 
-import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
-import com.secondWind.modooDiary.common.result.WeatherResultResponse;
+import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
+import com.secondWind.modooDiary.common.result.PublicWeatherResultResponse;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,12 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class WeatherSubscriber {
+public class PublicWeatherSubscriber {
 
     private static final String serviceKey = "spDslsvoqEoOF8bCExVvcPRCqc0fqL9//Jt4q87Klb9GSzw6R9waE2uI2o7YHgZIEDXiAhNycfczlR9DIzKlYg==";
 
-
-    public String getWeatherStatus(Region userRegion) {
+    public String getWeatherStatus(PublicRegion userRegion) {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -26,7 +25,6 @@ public class WeatherSubscriber {
         String time = currentDateTime.format(timeFormatter);
 
         int checkTime = Integer.parseInt(time);
-        checkTime += 900;
 
         if (checkTime % 100 < 30) {
             checkTime -= 100;
@@ -34,11 +32,11 @@ public class WeatherSubscriber {
 
         time = String.format("%04d", checkTime);
 
-        WeatherResultResponse weather = this.weatherSubscriber(userRegion, date, time);
+        PublicWeatherResultResponse weather = this.weatherSubscriber(userRegion, date, time);
 
-        List<WeatherResultResponse.Response.Item> items = weather.getResponse().getBody().getItems().getItem();
-        Optional<WeatherResultResponse.Response.Item> pty = items.stream().filter(item -> item.getCategory().equals("PTY")).findFirst();
-        Optional<WeatherResultResponse.Response.Item> sky = items.stream().filter(item -> item.getCategory().equals("SKY")).findFirst();
+        List<PublicWeatherResultResponse.Response.Item> items = weather.getResponse().getBody().getItems().getItem();
+        Optional<PublicWeatherResultResponse.Response.Item> pty = items.stream().filter(item -> item.getCategory().equals("PTY")).findFirst();
+        Optional<PublicWeatherResultResponse.Response.Item> sky = items.stream().filter(item -> item.getCategory().equals("SKY")).findFirst();
 
         if (pty.isPresent()) {
             String rainyStatus = pty.get().getFcstValue();
@@ -67,7 +65,7 @@ public class WeatherSubscriber {
         return "모름";
     }
 
-    public WeatherResultResponse weatherSubscriber(Region userRegion, String date, String time) {
+    public PublicWeatherResultResponse weatherSubscriber(PublicRegion userRegion, String date, String time) {
         // 초 단기 일기 예보 정보 조회
         String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
         return WebClient.create(url)
@@ -84,7 +82,7 @@ public class WeatherSubscriber {
                         .build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class).map(Exception::new))
-                .bodyToMono(WeatherResultResponse.class)
+                .bodyToMono(PublicWeatherResultResponse.class)
                 .block();
     }
 }

@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
-@Service
-public class DiaryDTOMapper implements Function<Diary, DiaryResponse> {
-    @Override
-    public DiaryResponse apply(Diary diary) {
-        return new DiaryResponse(
-                diary.getId(),
-                diary.getMember().getNickName(),
-                diary.getTitle(),
-                diary.getWeather(),
-                diary.getContent(),
-                diary.getRecommendCount(),
-                diary.getCreatedDate(),
-                diary.getLastModifiedDate());
-    }
-}
+//@Service
+//public class DiaryDTOMapper implements Function<Diary, DiaryResponse> {
+////    @Override
+////    public DiaryResponse apply(Diary diary) {
+////        return new DiaryResponse(
+////                diary.getId(),
+////                diary.getMember().getNickName(),
+////                diary.getTitle(),
+////                diary.getWeatherDescription(),
+////                diary.getContent(),
+////                diary.getRecommendCount(),
+////                diary.getCreatedDate(),
+////                diary.getLastModifiedDate());
+////    }
+//}

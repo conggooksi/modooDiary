@@ -6,7 +6,6 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
-import com.secondWind.modooDiary.api.member.auth.enumerate.Region;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
