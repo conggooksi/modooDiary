@@ -1,12 +1,10 @@
 package com.secondWind.modooDiary.common.component;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
-import com.secondWind.modooDiary.api.diary.repository.WeatherRepository;
 import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
-import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.common.result.OpenWeatherMapResultResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -16,15 +14,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class OpenWeatherMapSubscriber {
 
-    private static final String serviceKey = "13f95afecd7b5c2aff4b5104efd0e701";
-    private final WeatherRepository weatherRepository;
+    @Value("${weather.openweather}")
+    private String serviceKey;
 
     public Weather getWeatherStatus(OpenweatherRegion userRegion) {
         OpenWeatherMapResultResponse weather = this.weatherSubscriber(userRegion);
         OpenWeatherMapResultResponse.Weather resultWeather = weather.getCurrent().getWeather().get(0);
 
         return Weather.of()
-                .statusId((long) Math.round(resultWeather.getId()))
+                .statusId(resultWeather.getId().longValue())
                 .main(resultWeather.getMain())
                 .description(resultWeather.getDescription())
                 .build();

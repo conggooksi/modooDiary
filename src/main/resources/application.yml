@@ -29,3 +29,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+weather:
+  openweather: 13f95afecd7b5c2aff4b5104efd0e701
+  publicweather: spDslsvoqEoOF8bCExVvcPRCqc0fqL9//Jt4q87Klb9GSzw6R9waE2uI2o7YHgZIEDXiAhNycfczlR9DIzKlYg==

@@ -2,6 +2,7 @@ package com.secondWind.modooDiary.common.component;
 
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.common.result.PublicWeatherResultResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,7 +15,8 @@ import java.util.Optional;
 @Component
 public class PublicWeatherSubscriber {
 
-    private static final String serviceKey = "spDslsvoqEoOF8bCExVvcPRCqc0fqL9//Jt4q87Klb9GSzw6R9waE2uI2o7YHgZIEDXiAhNycfczlR9DIzKlYg==";
+    @Value("${weather.publicweather}")
+    private String serviceKey;
 
     public String getWeatherStatus(PublicRegion userRegion) {
         LocalDateTime currentDateTime = LocalDateTime.now();
