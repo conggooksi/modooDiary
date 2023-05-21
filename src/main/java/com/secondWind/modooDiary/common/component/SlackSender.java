@@ -20,11 +20,17 @@ public class SlackSender {
     private String serviceKey;
 
     public void slackSender(String nickName, String title) {
+        StringBuffer text = new StringBuffer();
+        text.append("작성자 : ");
+        text.append(nickName);
+        text.append(" 제목 : ");
+        text.append(title);
+
         String url = "https://hooks.slack.com/services/";
         WebClient.create(url)
                 .post()
                 .uri(serviceKey)
-                .bodyValue("'text'" + ":" + " '" + nickName + "의 일기" + " " + "제목:" + title + "'")
+                .bodyValue(text)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class).map(Exception::new))
                 .bodyToMono(String.class)
