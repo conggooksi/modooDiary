@@ -12,6 +12,8 @@ import com.secondWind.modooDiary.api.diary.domain.response.DiaryDetail;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
+import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
+import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
 import com.secondWind.modooDiary.common.component.OpenWeatherMapSubscriber;
@@ -37,7 +39,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
-    private final PublicWeatherSubscriber weatherSubscriber;
+    private final PublicWeatherSubscriber publicWeatherSubscriber;
     private final OpenWeatherMapSubscriber openWeatherMapSubscriber;
     private final DiaryRecommendRepository diaryRecommendRepository;
     private final SlackSender slackSender;
@@ -61,6 +63,11 @@ public class DiaryServiceImpl implements DiaryService {
                         .build());
         if (writeDiaryRequest.getWeather() == null) {
             Weather weatherStatus = openWeatherMapSubscriber.getWeatherStatus(member.getRegion());
+            if (weatherStatus == null) {
+                PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
+                weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
+            }
+
             writeDiaryRequest.setWeather(weatherStatus);
         }
 

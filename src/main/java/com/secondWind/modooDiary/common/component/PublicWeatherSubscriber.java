@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.common.component;
 
+import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.common.result.PublicWeatherResultResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,7 @@ public class PublicWeatherSubscriber {
     @Value("${weather.publicweather}")
     private String serviceKey;
 
-    public String getWeatherStatus(PublicRegion userRegion) {
+    public Weather getWeatherStatus(PublicRegion userRegion) {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -43,28 +44,28 @@ public class PublicWeatherSubscriber {
         if (pty.isPresent()) {
             String rainyStatus = pty.get().getFcstValue();
             if (!rainyStatus.equals("0")) {
-                switch (rainyStatus) {
-                    case "1" -> rainyStatus = "비";
-                    case "2" -> rainyStatus = "비/눈";
-                    case "3" -> rainyStatus = "눈";
-                    case "5" -> rainyStatus = "빗방울";
-                    case "6" -> rainyStatus = "빗방울눈날림";
-                    case "7" -> rainyStatus = "눈날림";
-                }
-
-                return rainyStatus;
+                return Weather.of()
+                        .statusId(switch (rainyStatus) {
+                                    case "1" -> 501L;
+                                    case "2" -> 616L;
+                                    case "3" -> 601L;
+                                    case "6" -> 300L;
+                                    case "7" -> 600L;
+                                    default -> 500L;})
+                        .build();
             } else if (sky.isPresent()) {
                 String weatherStatus = sky.get().getFcstValue();
-                switch (weatherStatus) {
-                    case "1" -> weatherStatus = "맑음";
-                    case "3" -> weatherStatus = "구름많음";
-                    case "4" -> weatherStatus = "흐림";
-                }
-                return weatherStatus;
+                return Weather.of()
+                        .statusId(switch (weatherStatus) {
+                                    case "3" -> 802L;
+                                    case "4" -> 804L;
+                                    default -> 800L;})
+                        .build();
             }
         }
-
-        return "모름";
+        return Weather.of()
+                .statusId(800L)
+                .build();
     }
 
     public PublicWeatherResultResponse weatherSubscriber(PublicRegion userRegion, String date, String time) {

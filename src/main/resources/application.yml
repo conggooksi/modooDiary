@@ -1,3 +1,5 @@
+server:
+  port: 9092
 spring:
   jwt:
     secret: de1e9266dd159fa1641bbb6661fb8479b9c8e12ccf9a571d82faa93f5947b84c479679a34839e2a6c6d3fbffbb8feb6e03ae0ebb0846c3464a1a211ee0cd5e04

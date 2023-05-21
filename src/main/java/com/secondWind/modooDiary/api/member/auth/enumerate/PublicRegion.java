@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.api.member.auth.enumerate;
 
+import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import lombok.Getter;
 
 @Getter
@@ -21,7 +22,7 @@ public enum PublicRegion {
     ULSAN("울산", "102", "84"),
     GWANGJU("광주", "58", "74");
 
-    private final String region;
+    private String region;
     private final String nx;
     private final String ny;
 
@@ -41,6 +42,10 @@ public enum PublicRegion {
         this.region = region;
         this.nx = nx;
         this.ny = ny;
+    }
+
+    public static PublicRegion toPublicRegion(Member member) {
+        return PublicRegion.valueOf(member.getRegion().toString());
     }
 
 //    @Override
