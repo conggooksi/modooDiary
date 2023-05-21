@@ -16,6 +16,7 @@ import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
 import com.secondWind.modooDiary.common.component.OpenWeatherMapSubscriber;
 import com.secondWind.modooDiary.common.component.PublicWeatherSubscriber;
+import com.secondWind.modooDiary.common.component.SlackSender;
 import com.secondWind.modooDiary.common.enumerate.Yn;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
@@ -39,6 +40,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final PublicWeatherSubscriber weatherSubscriber;
     private final OpenWeatherMapSubscriber openWeatherMapSubscriber;
     private final DiaryRecommendRepository diaryRecommendRepository;
+    private final SlackSender slackSender;
 
     @Override
     @Transactional
@@ -62,7 +64,11 @@ public class DiaryServiceImpl implements DiaryService {
             writeDiaryRequest.setWeather(weatherStatus);
         }
 
-        return diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
+        Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
+
+        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
+
+        return diaryId;
     }
 
     @Override
