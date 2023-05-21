@@ -3,6 +3,7 @@ package com.secondWind.modooDiary.common.component;
 import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
 import com.secondWind.modooDiary.common.result.OpenWeatherMapResultResponse;
+import com.secondWind.modooDiary.common.result.SlackResultResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class SlackSender {
                 .bodyValue(text)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class).map(Exception::new))
-                .bodyToMono(String.class)
+                .bodyToMono(SlackResultResponse.class)
                 .block();
     }
 
