@@ -28,6 +28,15 @@ public class CustomExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler({SlackException.class})
+    public ResponseEntity<?> exceptionHandler(HttpServletRequest request, final SlackException e) {
+        return ResponseHandler.failResultGenerate()
+                .status(e.getStatus())
+                .errorMessage(e.getErrorEntity().getError().getMessage())
+                .errorCode(e.getErrorEntity().getError().getCode())
+                .build();
+    }
+
     @ExceptionHandler({CustomAuthException.class})
     public ResponseEntity<?> exceptionHandler(HttpServletRequest request, final CustomAuthException e) {
         return ResponseHandler.failResultGenerate()

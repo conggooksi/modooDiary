@@ -74,7 +74,6 @@ public class DiaryServiceImpl implements DiaryService {
         slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
         Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
 
-
         return diaryId;
     }
 
