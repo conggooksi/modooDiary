@@ -36,7 +36,7 @@ weather:
 
 slack:
 ##  모두의 일기
-#  token: https://hooks.slack.com/services/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
+#  token: https://hooks.slack.com/services/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
 #  나에게 보내기
 #  token: TDD0B2813/B0597E2JB6U/JPrKsA196JZYkGwNudgbh54d
-  webhook: https://hooks.slack.com/services/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
+  webhook: https://hooks.slack.com/services/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
