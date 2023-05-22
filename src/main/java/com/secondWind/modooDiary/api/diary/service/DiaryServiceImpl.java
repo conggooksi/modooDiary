@@ -8,11 +8,9 @@ import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
-import com.secondWind.modooDiary.api.diary.domain.response.DiaryDetail;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
-import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
@@ -23,14 +21,13 @@ import com.secondWind.modooDiary.common.enumerate.Yn;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
+import com.secondWind.modooDiary.common.exception.code.WeatherErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,16 +58,41 @@ public class DiaryServiceImpl implements DiaryService {
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
                         .status(HttpStatus.BAD_REQUEST)
                         .build());
-        if (writeDiaryRequest.getWeather() == null) {
-            Weather weatherStatus = openWeatherMapSubscriber.getWeatherStatus(member.getRegion());
-            if (weatherStatus == null) {
-                PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
-                weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
-            }
 
-            writeDiaryRequest.setWeather(weatherStatus);
+
+        Weather weatherStatus = null;
+
+        if (writeDiaryRequest.getWeather() != null && !writeDiaryRequest.getWeather().isEmpty()) {
+            switch (writeDiaryRequest.getWeather()) {
+                case "맑음" -> weatherStatus = Weather.of().statusId(800L).build();
+                case "구름 많음" -> weatherStatus = Weather.of().statusId(804L).build();
+                case "비" -> weatherStatus = Weather.of().statusId(501L).build();
+                case "눈" -> weatherStatus = Weather.of().statusId(601L).build();
+                default -> {
+                    throw ApiException.builder()
+                            .errorCode(WeatherErrorCode.NOT_FOUND_WEATHER.getCode())
+                            .errorMessage(WeatherErrorCode.NOT_FOUND_WEATHER.getMessage())
+                            .status(HttpStatus.BAD_REQUEST)
+                            .build();
+                }
+            }
+        } else {
+            if (writeDiaryRequest.getNx() == null || writeDiaryRequest.getNy() == null) {
+                weatherStatus = openWeatherMapSubscriber.getWeatherStatus(member.getRegion().getNx(), member.getRegion().getNy());
+                if (weatherStatus == null) {
+                    PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
+                    weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
+                }
+            } else {
+                weatherStatus = openWeatherMapSubscriber.getWeatherStatus(writeDiaryRequest.getNx(), writeDiaryRequest.getNy());
+                if (weatherStatus == null) {
+                    PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
+                    weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
+                }
+            }
         }
 
+        writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
         slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
         Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
 

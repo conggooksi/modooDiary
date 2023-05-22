@@ -17,8 +17,8 @@ public class OpenWeatherMapSubscriber {
     @Value("${weather.openweather}")
     private String serviceKey;
 
-    public Weather getWeatherStatus(OpenweatherRegion userRegion) {
-        OpenWeatherMapResultResponse weather = this.weatherSubscriber(userRegion);
+    public Weather getWeatherStatus(Float nx, Float ny) {
+        OpenWeatherMapResultResponse weather = this.weatherSubscriber(nx, ny);
         OpenWeatherMapResultResponse.Weather resultWeather = weather.getCurrent().getWeather().get(0);
 
         return Weather.of()
@@ -28,14 +28,14 @@ public class OpenWeatherMapSubscriber {
                 .build();
     }
 
-    public OpenWeatherMapResultResponse weatherSubscriber(OpenweatherRegion userRegion) {
+    public OpenWeatherMapResultResponse weatherSubscriber(Float nx, Float ny) {
         // 초 단기 일기 예보 정보 조회
         String url = "https://api.openweathermap.org/data/3.0/onecall";
         return WebClient.create(url)
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .queryParam("lat", Float.parseFloat(userRegion.getNx()))
-                        .queryParam("lon", Float.parseFloat(userRegion.getNy()))
+                        .queryParam("lat", nx)
+                        .queryParam("lon", ny)
                         .queryParam("exclude", "daily")
                         .queryParam("appid", serviceKey)
                         .build())
