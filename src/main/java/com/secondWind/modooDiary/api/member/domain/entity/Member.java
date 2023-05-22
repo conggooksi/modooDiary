@@ -1,8 +1,8 @@
 package com.secondWind.modooDiary.api.member.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
 import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
-import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.common.enumerate.Authority;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -41,6 +41,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Diary> diaryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<DiaryRecommend> diaryRecommendList = new ArrayList<>();
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")

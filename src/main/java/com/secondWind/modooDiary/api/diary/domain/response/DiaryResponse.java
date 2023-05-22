@@ -3,6 +3,7 @@ package com.secondWind.modooDiary.api.diary.domain.response;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class DiaryResponse {
@@ -14,9 +15,10 @@ public class DiaryResponse {
     private int recommendCount;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+    private List<Long> recommendedMemberIds;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public DiaryResponse(Long id, String nickName, String title, String weather, String content, int recommendCount,LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public DiaryResponse(Long id, String nickName, String title, String weather, String content, int recommendCount, LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.id = id;
         this.nickName = nickName;
         this.title = title;

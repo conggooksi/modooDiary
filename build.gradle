@@ -56,10 +56,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// google 로그인 연동
-	implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	// 슬랙 메시지 전송
-	implementation ('com.github.maricn:logback-slack-appender:1.6.1')
+	implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 tasks.named('test') {
 	useJUnitPlatform()

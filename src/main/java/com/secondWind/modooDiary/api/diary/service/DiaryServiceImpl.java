@@ -29,6 +29,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,7 +49,16 @@ public class DiaryServiceImpl implements DiaryService {
     public Page<DiaryResponse> getDiaries(SearchDiary searchDiary) {
         PageRequest pageRequest = PageRequest.of(searchDiary.getOffset(), searchDiary.getLimit(), searchDiary.getDirection(), searchDiary.getOrderBy());
 
-        return diaryRepository.searchDiary(searchDiary, pageRequest);
+        Page<DiaryResponse> diaryResponses = diaryRepository.searchDiary(searchDiary, pageRequest);
+        for (DiaryResponse diaryResponse : diaryResponses) {
+            List<Long> memberIds = new ArrayList<>();
+            List<DiaryRecommend> diaryRecommends = diaryRecommendRepository.findByDiaryId(diaryResponse.getId());
+            for (DiaryRecommend diaryRecommend : diaryRecommends) {
+                memberIds.add(diaryRecommend.getMember().getId());
+            }
+            diaryResponse.setRecommendedMemberIds(memberIds);
+        }
+        return diaryResponses;
     }
 
     @Override
@@ -60,43 +72,50 @@ public class DiaryServiceImpl implements DiaryService {
                         .build());
 
 
-        Weather weatherStatus = null;
-
-        if (writeDiaryRequest.getWeather() != null && !writeDiaryRequest.getWeather().isEmpty()) {
-            switch (writeDiaryRequest.getWeather()) {
-                case "맑음" -> weatherStatus = Weather.of().statusId(800L).build();
-                case "구름 많음" -> weatherStatus = Weather.of().statusId(804L).build();
-                case "비" -> weatherStatus = Weather.of().statusId(501L).build();
-                case "눈" -> weatherStatus = Weather.of().statusId(601L).build();
-                default -> {
-                    throw ApiException.builder()
-                            .errorCode(WeatherErrorCode.NOT_FOUND_WEATHER.getCode())
-                            .errorMessage(WeatherErrorCode.NOT_FOUND_WEATHER.getMessage())
-                            .status(HttpStatus.BAD_REQUEST)
-                            .build();
-                }
-            }
-        } else {
-            if (writeDiaryRequest.getNx() == null || writeDiaryRequest.getNy() == null) {
-                weatherStatus = openWeatherMapSubscriber.getWeatherStatus(member.getRegion().getNx(), member.getRegion().getNy());
-                if (weatherStatus == null) {
-                    PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
-                    weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
-                }
-            } else {
-                weatherStatus = openWeatherMapSubscriber.getWeatherStatus(writeDiaryRequest.getNx(), writeDiaryRequest.getNy());
-                if (weatherStatus == null) {
-                    PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
-                    weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
-                }
-            }
-        }
+        Weather weatherStatus = getWeather(writeDiaryRequest, member);
 
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
-        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
+
         Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
 
+        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
+
         return diaryId;
+    }
+
+    private Weather getWeather(WriteDiaryRequest writeDiaryRequest, Member member) {
+        Weather weatherStatus = null;
+        if (writeDiaryRequest.getWeather() != null && !writeDiaryRequest.getWeather().isBlank()) {
+            weatherStatus = Weather.of()
+                    .statusId(
+                            switch (writeDiaryRequest.getWeather()) {
+                                case "맑음" -> 800L;
+                                case "구름 많음" -> 804L;
+                                case "비" -> 501L;
+                                case "눈" -> 601L;
+                                default -> throw ApiException.builder()
+                                        .errorCode(WeatherErrorCode.NOT_FOUND_WEATHER.getCode())
+                                        .errorMessage(WeatherErrorCode.NOT_FOUND_WEATHER.getMessage())
+                                        .status(HttpStatus.BAD_REQUEST)
+                                        .build();})
+                    .build();
+        } else {
+            Float nx = 0F;
+            Float ny = 0F;
+            if (writeDiaryRequest.getNx() == null || writeDiaryRequest.getNy() == null) {
+                nx = member.getRegion().getNx();
+                ny = member.getRegion().getNy();
+            } else {
+                nx = writeDiaryRequest.getNx();
+                ny = writeDiaryRequest.getNy();
+            }
+            weatherStatus = openWeatherMapSubscriber.getWeatherStatus(nx, ny);
+            if (weatherStatus == null) {
+                PublicRegion publicRegion = PublicRegion.toPublicRegion(member);
+                weatherStatus = publicWeatherSubscriber.getWeatherStatus(publicRegion);
+            }
+        }
+        return weatherStatus;
     }
 
     @Override
