@@ -52,6 +52,8 @@ public class SlackNotificationAspect {
         text.append("\n");
         text.append("일 기 : ");
         text.append(((DiaryResponseToSlack) result).getContent());
+        text.append("\n");
+        text.append("https://modoo-diary.vercel.app/");
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setText(text.toString());
 
