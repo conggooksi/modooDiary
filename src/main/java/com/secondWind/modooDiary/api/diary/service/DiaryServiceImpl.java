@@ -71,9 +71,9 @@ public class DiaryServiceImpl implements DiaryService {
             writeDiaryRequest.setWeather(weatherStatus);
         }
 
+        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
         Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
 
-        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
 
         return diaryId;
     }

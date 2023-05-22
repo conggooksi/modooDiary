@@ -1,15 +1,10 @@
 package com.secondWind.modooDiary.common.component;
 
-import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
-import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
-import com.secondWind.modooDiary.common.result.OpenWeatherMapResultResponse;
-import com.secondWind.modooDiary.common.result.SlackResultResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,24 +19,24 @@ public class SlackSender {
         StringBuffer text = new StringBuffer();
         text.append("작성자 : ");
         text.append(nickName);
-        text.append(" 제목 : ");
+        text.append("\n");
+        text.append(" 제 목 : ");
         text.append(title);
 
         String url = "https://hooks.slack.com/services/";
         WebClient.create(url)
                 .post()
                 .uri(serviceKey)
-                .bodyValue(text)
+                .bodyValue(Text.of().text(text.toString()).build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class).map(Exception::new))
-                .bodyToMono(SlackResultResponse.class)
+                .bodyToMono(String.class)
                 .block();
     }
 
         @Data
         @Builder(builderMethodName = "of", builderClassName = "of")
         private static class Text {
-            private String writer;
-            private String title;
+            private String text;
         }
 }
