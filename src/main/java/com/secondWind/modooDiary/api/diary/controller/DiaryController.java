@@ -4,8 +4,8 @@ import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
-import com.secondWind.modooDiary.api.diary.domain.response.DiaryDetail;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
+import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,10 +50,10 @@ public class DiaryController {
     @Operation(summary = "일기 작성 API")
     @PostMapping("")
     public ResponseEntity<?> writeDiary(@RequestBody WriteDiaryRequest writeDiaryRequest) {
-        Long diaryId = diaryService.writeDiary(writeDiaryRequest);
+        DiaryResponseToSlack diaryResponseToSlack = diaryService.writeDiary(writeDiaryRequest);
 
         return ResponseHandler.generate()
-                .data(diaryId)
+                .data(diaryResponseToSlack.getDiaryId())
                 .status(HttpStatus.CREATED)
                 .build();
     }

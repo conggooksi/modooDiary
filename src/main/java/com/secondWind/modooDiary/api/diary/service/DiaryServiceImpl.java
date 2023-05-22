@@ -9,6 +9,7 @@ import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
+import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
@@ -16,7 +17,6 @@ import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
 import com.secondWind.modooDiary.common.component.OpenWeatherMapSubscriber;
 import com.secondWind.modooDiary.common.component.PublicWeatherSubscriber;
-import com.secondWind.modooDiary.common.component.SlackSender;
 import com.secondWind.modooDiary.common.enumerate.Yn;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
@@ -42,7 +42,6 @@ public class DiaryServiceImpl implements DiaryService {
     private final PublicWeatherSubscriber publicWeatherSubscriber;
     private final OpenWeatherMapSubscriber openWeatherMapSubscriber;
     private final DiaryRecommendRepository diaryRecommendRepository;
-    private final SlackSender slackSender;
 
     @Override
     @Transactional
@@ -63,7 +62,7 @@ public class DiaryServiceImpl implements DiaryService {
 
     @Override
     @Transactional
-    public Long writeDiary(WriteDiaryRequest writeDiaryRequest) {
+    public DiaryResponseToSlack writeDiary(WriteDiaryRequest writeDiaryRequest) {
         Member member = memberRepository.findById(writeDiaryRequest.getMemberId()).orElseThrow(
                 () -> ApiException.builder()
                         .errorMessage(MemberErrorCode.NOT_FOUND_MEMBER.getMessage())
@@ -76,11 +75,14 @@ public class DiaryServiceImpl implements DiaryService {
 
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
 
-        Long diaryId = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member)).getId();
+        Diary diary = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member));
 
-        slackSender.slackSender(member.getNickName(), writeDiaryRequest.getTitle());
-
-        return diaryId;
+        return DiaryResponseToSlack.of()
+                .diaryId(diary.getMember().getId())
+                .nickName(diary.getMember().getNickName())
+                .title(diary.getTitle())
+                .content(diary.getContent())
+                .build();
     }
 
     private Weather getWeather(WriteDiaryRequest writeDiaryRequest, Member member) {
