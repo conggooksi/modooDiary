@@ -40,6 +40,7 @@ public class DiaryResponse {
                 .weather(diaryResponse.getWeather())
                 .content(diaryResponse.getContent())
                 .recommendCount(diaryResponse.getRecommendCount())
+                .unlikeCount(diaryResponse.getUnlikeCount())
                 .createdTime(diaryResponse.getCreatedTime())
                 .updatedTime(diaryResponse.getUpdatedTime())
                 .build();
