@@ -22,16 +22,16 @@ public class StickerCount extends BaseEntity {
     @Column(name = "sticker_count_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    private Long recommendCount;
+    private int recommendCount;
 
-    private Long unlikeCount;
+    private int unlikeCount;
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public StickerCount(Long id, Diary diary, Long recommendCount, Long unlikeCount) {
+    public StickerCount(Long id, Diary diary, int recommendCount, int unlikeCount) {
         this.id = id;
         this.diary = diary;
         this.recommendCount = recommendCount;
@@ -42,8 +42,8 @@ public class StickerCount extends BaseEntity {
     public static StickerCount createStickerCount(Diary diary) {
         return of()
                 .diary(diary)
-                .recommendCount(0L)
-                .unlikeCount(0L)
+                .recommendCount(0)
+                .unlikeCount(0)
                 .build();
     }
 

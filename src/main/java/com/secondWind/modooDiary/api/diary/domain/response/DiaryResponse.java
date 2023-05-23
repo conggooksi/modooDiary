@@ -14,18 +14,20 @@ public class DiaryResponse {
     private String weather;
     private String content;
     private int recommendCount;
+    private int unlikeCount;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
     private List<Long> recommendedMemberIds;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public DiaryResponse(Long id, String nickName, String title, String weather, String content, int recommendCount, LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public DiaryResponse(Long id, String nickName, String title, String weather, String content, int recommendCount, int unlikeCount, LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.id = id;
         this.nickName = nickName;
         this.title = title;
         this.weather = weather;
         this.content = content;
         this.recommendCount = recommendCount;
+        this.unlikeCount = unlikeCount;
         this.createdTime = createdTime;
         this.updatedTime = updatedTime;
     }
@@ -38,6 +40,7 @@ public class DiaryResponse {
                 .weather(diaryResponse.getWeather())
                 .content(diaryResponse.getContent())
                 .recommendCount(diaryResponse.getRecommendCount())
+                .unlikeCount(diaryResponse.getUnlikeCount())
                 .createdTime(diaryResponse.getCreatedTime())
                 .updatedTime(diaryResponse.getUpdatedTime())
                 .build();

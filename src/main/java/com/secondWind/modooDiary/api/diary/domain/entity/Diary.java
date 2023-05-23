@@ -2,6 +2,7 @@ package com.secondWind.modooDiary.api.diary.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
 import com.secondWind.modooDiary.api.diary.domain.entity.link.Sticker;
+import com.secondWind.modooDiary.api.diary.domain.entity.link.StickerCount;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -35,6 +36,10 @@ public class Diary extends BaseEntity {
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<DiaryRecommend> diaryRecommendLIst = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "diary_id")
+    private StickerCount stickerCount;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
     public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount, int isDeleted, List<DiaryRecommend> diaryRecommendLIst) {
