@@ -22,7 +22,7 @@ public class StickerCount extends BaseEntity {
     @Column(name = "sticker_count_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
