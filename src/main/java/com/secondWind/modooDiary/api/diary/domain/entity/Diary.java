@@ -37,8 +37,7 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<DiaryRecommend> diaryRecommendLIst = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "diary_id")
+    @OneToOne(mappedBy = "diary",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private StickerCount stickerCount;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
