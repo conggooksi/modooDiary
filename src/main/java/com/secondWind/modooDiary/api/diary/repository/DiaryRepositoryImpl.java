@@ -38,14 +38,12 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         diary.title,
                         weather.description,
                         diary.content,
-                        stickerCount.recommendCount,
-                        stickerCount.unlikeCount,
+                        diary.recommendCount,
                         diary.createdDate,
                         diary.lastModifiedDate))
                 .from(diary)
                 .innerJoin(diary.member, member)
                 .innerJoin(diary.weather, weather)
-                .innerJoin(stickerCount.diary, diary)
                 .where(memberIdEq(searchDiary.getMemberId()),
                         diaryTitleLike(searchDiary.getTitle()),
                         diaryWeatherEq(searchDiary.getWeather()))
