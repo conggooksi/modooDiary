@@ -4,14 +4,15 @@ package com.secondWind.modooDiary.api.diary.service;
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
 import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
-import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
-import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
+import com.secondWind.modooDiary.api.diary.domain.entity.link.Sticker;
+import com.secondWind.modooDiary.api.diary.domain.entity.link.StickerCount;
+import com.secondWind.modooDiary.api.diary.domain.request.*;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
 import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
+import com.secondWind.modooDiary.api.diary.repository.StickerCountRepository;
+import com.secondWind.modooDiary.api.diary.repository.StickerRepository;
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
@@ -42,6 +43,8 @@ public class DiaryServiceImpl implements DiaryService {
     private final PublicWeatherSubscriber publicWeatherSubscriber;
     private final OpenWeatherMapSubscriber openWeatherMapSubscriber;
     private final DiaryRecommendRepository diaryRecommendRepository;
+    private final StickerRepository stickerRepository;
+    private final StickerCountRepository stickerCountRepository;
 
     @Override
     @Transactional
@@ -168,7 +171,6 @@ public class DiaryServiceImpl implements DiaryService {
     @Transactional
     public void updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest) {
         Member member = findMember(diaryRecommendRequest.getMemberId());
-
         Diary diary = findDiary(diaryRecommendRequest.getDiaryId());
 
         DiaryRecommend findDiaryRecommend = diaryRecommendRepository.findByMemberAndDiary(member, diary);
@@ -189,6 +191,39 @@ public class DiaryServiceImpl implements DiaryService {
                 diary.minusRecommendCount();
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateSticker(StickerRequest stickerRequest) {
+        Member member = findMember(stickerRequest.getMemberId());
+        Diary diary = findDiary(stickerRequest.getDiaryId());
+
+        Sticker findSticker = stickerRepository.findByMemberAndDiary(member, diary);
+
+        if (findSticker == null) {
+            Sticker sticker = Sticker.createStickerBuilder()
+                    .member(member)
+                    .diary(diary)
+                    .recommendYn(stickerRequest.getRecommendYn())
+                    .unlikeYn(stickerRequest.getUnlikeYn())
+                    .build();
+
+            findSticker = stickerRepository.save(sticker);
+        }
+
+        findSticker.changeSticker(stickerRequest);
+
+        StickerCount findStickerCount = stickerCountRepository.findByDiaryId(stickerRequest.getDiaryId());
+        if (findStickerCount == null) {
+            StickerCount stickerCount = StickerCount.createStickerCountBuilder()
+                    .diary(diary)
+                    .build();
+
+            findStickerCount = stickerCountRepository.save(stickerCount);
+        }
+
+        findStickerCount.plusSticker(stickerRequest);
     }
 
     private Member findMember(Long memberId) {

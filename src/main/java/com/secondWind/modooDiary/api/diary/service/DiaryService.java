@@ -1,9 +1,6 @@
 package com.secondWind.modooDiary.api.diary.service;
 
-import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
-import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
+import com.secondWind.modooDiary.api.diary.domain.request.*;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import org.springframework.data.domain.Page;
@@ -20,4 +17,6 @@ public interface DiaryService {
     DiaryResponse getDiary(Long id);
 
     void updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest);
+
+    void updateSticker(StickerRequest stickerRequest);
 }
