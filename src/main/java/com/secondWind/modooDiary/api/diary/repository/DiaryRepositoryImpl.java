@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static com.secondWind.modooDiary.api.diary.domain.entity.QDiary.diary;
 import static com.secondWind.modooDiary.api.diary.domain.entity.QWeather.weather;
+import static com.secondWind.modooDiary.api.diary.domain.entity.link.QStickerCount.stickerCount;
 import static com.secondWind.modooDiary.api.member.domain.entity.QMember.member;
 
 @Repository
@@ -37,12 +38,14 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         diary.title,
                         weather.description,
                         diary.content,
-                        diary.recommendCount,
+                        stickerCount.recommendCount,
+                        stickerCount.unlikeCount,
                         diary.createdDate,
                         diary.lastModifiedDate))
                 .from(diary)
                 .innerJoin(diary.member, member)
                 .innerJoin(diary.weather, weather)
+                .innerJoin(stickerCount.diary, diary)
                 .where(memberIdEq(searchDiary.getMemberId()),
                         diaryTitleLike(searchDiary.getTitle()),
                         diaryWeatherEq(searchDiary.getWeather()))

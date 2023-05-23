@@ -1,9 +1,6 @@
 package com.secondWind.modooDiary.api.diary.controller;
 
-import com.secondWind.modooDiary.api.diary.domain.request.DiaryRecommendRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
-import com.secondWind.modooDiary.api.diary.domain.request.UpdateDiaryRequest;
-import com.secondWind.modooDiary.api.diary.domain.request.WriteDiaryRequest;
+import com.secondWind.modooDiary.api.diary.domain.request.*;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import com.secondWind.modooDiary.api.diary.service.DiaryService;
@@ -84,6 +81,16 @@ public class DiaryController {
     @PutMapping("/recommend")
     public ResponseEntity<?> updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest) {
         diaryService.updateDiaryRecommend(diaryRecommendRequest);
+        return ResponseHandler.generate()
+                .data(null)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @Operation(summary = "스티커 API")
+    @PutMapping("/sticker")
+    public ResponseEntity<?> updateSticker(@RequestBody StickerRequest stickerRequest) {
+        diaryService.updateSticker(stickerRequest);
         return ResponseHandler.generate()
                 .data(null)
                 .status(HttpStatus.OK)

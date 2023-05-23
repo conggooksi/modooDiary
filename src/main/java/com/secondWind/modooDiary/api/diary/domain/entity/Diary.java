@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.diary.domain.entity;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
+import com.secondWind.modooDiary.api.diary.domain.entity.link.Sticker;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -36,7 +37,7 @@ public class Diary extends BaseEntity {
     private List<DiaryRecommend> diaryRecommendLIst = new ArrayList<>();
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount,int isDeleted, List<DiaryRecommend> diaryRecommendLIst) {
+    public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount, int isDeleted, List<DiaryRecommend> diaryRecommendLIst) {
         this.id = diaryId;
         this.member = member;
         this.title = title;
