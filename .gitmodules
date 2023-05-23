@@ -1,0 +1,3 @@
+[submodule "submodule-modooDiary"]
+	path = submodule-modooDiary
+	url = https://github.com/guncook/submodule-modooDiary.git

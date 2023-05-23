@@ -84,3 +84,11 @@ tasks.withType(JavaCompile) {
 clean.doLast {
 	file(querydslDir).deleteDir()
 }
+
+task copyPrivate(type: Copy) {
+	copy {
+		from './submodule-modooDiary'
+		include "*.yml"
+		into 'src/main/resources'
+	}
+}
