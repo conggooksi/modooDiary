@@ -7,6 +7,7 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.spec.EmailSpecification;
 import com.secondWind.modooDiary.api.member.auth.domain.spec.PasswordSpecification;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
@@ -37,6 +38,7 @@ public class AuthServiceImpl implements AuthService{
 
     private final MemberRepository memberRepository;
 
+    private final EmailSpecification emailSpecification;
     private final PasswordSpecification passwordSpecification;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -51,6 +53,7 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     public MemberResponseDTO signup(MemberJoinDTO memberJoinDTO) {
 
+        emailSpecification.check(memberJoinDTO.getEmail());
         passwordSpecification.check(memberJoinDTO.getPassword());
 
         if (memberRepository.existsByEmailAndIsDeletedFalse(memberJoinDTO.getEmail())) {

@@ -9,21 +9,21 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 
 @Service
-public class PasswordSpecification extends AbstractSpecification<String> {
+public class EmailSpecification extends AbstractSpecification<String> {
     @Override
-    public boolean isSatisfiedBy(String password) {
+    public boolean isSatisfiedBy(String email) {
         // 소문자, 대문자, 숫자, 특수문자 포함, 8자 이상 16자 이하
-//        return password.length() >= 8 && password.length() <= 16 && Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@!%*#?&])[A-Za-z[0-9]$@!%*#?&]{8,}$",password);
-        return password.length() >= 4;
+        return Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email);
+//        return email.length() >= 4;
     }
 
     @Override
-    public void check(String password) throws ApiException {
-        if (!isSatisfiedBy(password)) {
+    public void check(String email) throws ApiException {
+        if (!isSatisfiedBy(email)) {
             throw ApiException.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .errorCode(AuthErrorCode.PASSWORD_NOT_ENOUGH_CONDITION.getCode())
-                    .errorMessage(AuthErrorCode.PASSWORD_NOT_ENOUGH_CONDITION.getMessage())
+                    .errorCode(AuthErrorCode.EMAIL_NOT_ENOUGH_CONDITION.getCode())
+                    .errorMessage(AuthErrorCode.EMAIL_NOT_ENOUGH_CONDITION.getMessage())
                     .build();
         }
     }

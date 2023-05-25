@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum AuthErrorCode {
 
+    EMAIL_NOT_ENOUGH_CONDITION("EMAIL_NOT_ENOUGH_CONDITION", "이메일 조건을 만족하지 못했습니다."),
     PASSWORD_NOT_ENOUGH_CONDITION("PASSWORD_NOT_ENOUGH_CONDITION", "패스워드 조건을 만족하지 못했습니다."),
 
     ALREADY_JOIN_USER("ALREADY_JOIN_USER", "이미 존재하는 아이디입니다."),

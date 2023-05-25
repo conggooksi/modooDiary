@@ -65,6 +65,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 
 	implementation 'net.gpedro.integrations.slack:slack-webhook:1.4.0'
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 tasks.named('test') {
 	useJUnitPlatform()
@@ -88,7 +89,7 @@ clean.doLast {
 task copyPrivate(type: Copy) {
 	copy {
 		from './submodule-modooDiary'
-		include "*.yml"
+		include "*.yml", "*.json"
 		into 'src/main/resources'
 	}
 }
