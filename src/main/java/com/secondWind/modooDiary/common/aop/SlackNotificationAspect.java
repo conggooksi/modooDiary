@@ -44,16 +44,17 @@ public class SlackNotificationAspect {
 
     private void sendSlackMessage(Object result) {
         StringBuffer text = new StringBuffer();
+        text.append("https://modoo-diary.vercel.app/");
+        text.append("\n");
         text.append("작성자 : ");
         text.append(((DiaryResponseToSlack) result).getNickName());
         text.append("\n");
-        text.append("제 목 : ");
+        text.append("제  목 : ");
         text.append(((DiaryResponseToSlack) result).getTitle());
         text.append("\n");
-        text.append("일 기 : ");
+        text.append("일  기 : ");
         text.append(((DiaryResponseToSlack) result).getContent());
-        text.append("\n");
-        text.append("https://modoo-diary.vercel.app/");
+
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setText(text.toString());
 

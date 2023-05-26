@@ -13,8 +13,8 @@ public class EmailSpecification extends AbstractSpecification<String> {
     @Override
     public boolean isSatisfiedBy(String email) {
         // 소문자, 대문자, 숫자, 특수문자 포함, 8자 이상 16자 이하
+        // \\w+@\\w+\\.\\w+(\\.\\w+)?
         return Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email);
-//        return email.length() >= 4;
     }
 
     @Override

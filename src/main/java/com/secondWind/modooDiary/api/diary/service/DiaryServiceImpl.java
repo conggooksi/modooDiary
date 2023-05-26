@@ -23,6 +23,7 @@ import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.DiaryErrorCode;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.exception.code.WeatherErrorCode;
+import com.secondWind.modooDiary.common.filter.badword.BadWords;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -78,6 +79,7 @@ public class DiaryServiceImpl implements DiaryService {
 
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
 
+        filteringAbuseInContent(writeDiaryRequest);
         Diary diary = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member));
 
         return DiaryResponseToSlack.of()
@@ -86,6 +88,21 @@ public class DiaryServiceImpl implements DiaryService {
                 .title(diary.getTitle())
                 .content(diary.getContent())
                 .build();
+    }
+
+    private static void filteringAbuseInContent(WriteDiaryRequest writeDiaryRequest) {
+        String content = writeDiaryRequest.getContent();
+        String filteredContent = content;
+
+        String[] badWords = new BadWords().badWords;
+
+        for (String badWord : badWords) {
+            if (content.contains(badWord)) {
+                filteredContent  = content.replace(badWord, "**");
+            }
+        }
+
+        writeDiaryRequest.setContent(filteredContent);
     }
 
     private Weather getWeather(WriteDiaryRequest writeDiaryRequest, Member member) {
