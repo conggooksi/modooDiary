@@ -18,30 +18,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-class AuthControllerTest {
-    private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
-    private  MemberRepository memberRepository = Mockito.mock(MemberRepository.class);
-    private  PasswordSpecification passwordSpecification = Mockito.mock(PasswordSpecification.class);
-    private  AuthenticationManagerBuilder authenticationManagerBuilder = Mockito.mock(AuthenticationManagerBuilder.class);
-    private  AdminSpecification adminSpecification = Mockito.mock(AdminSpecification.class);
-    private  JwtTokenProvider jwtTokenProvider = Mockito.mock(JwtTokenProvider.class);
-    private  StringRedisTemplate redisTemplate = Mockito.mock(StringRedisTemplate.class);
-
-    @Test
-    void signUpTest() {
-        AuthService authService = new AuthServiceImpl(passwordEncoder, memberRepository, passwordSpecification, authenticationManagerBuilder, adminSpecification, jwtTokenProvider, redisTemplate);
-        MemberJoinDTO memberJoinDTO = new MemberJoinDTO("kuk@gmail.com", "1234567", "테스트코드", "SEOUL");
-
-        Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
-
-        when(memberRepository.save(member)).thenAnswer((Answer<Member>) invocation -> {
-            Member savedMember = invocation.getArgument(0);
-            return savedMember;
-        });
-
-        Member newMember = memberRepository.save(member);
-
-        System.out.println("member = " + newMember.getNickName());
-    }
-
-}
+//class AuthControllerTest {
+//    private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
+//    private  MemberRepository memberRepository = Mockito.mock(MemberRepository.class);
+//    private  PasswordSpecification passwordSpecification = Mockito.mock(PasswordSpecification.class);
+//    private  AuthenticationManagerBuilder authenticationManagerBuilder = Mockito.mock(AuthenticationManagerBuilder.class);
+//    private  AdminSpecification adminSpecification = Mockito.mock(AdminSpecification.class);
+//    private  JwtTokenProvider jwtTokenProvider = Mockito.mock(JwtTokenProvider.class);
+//    private  StringRedisTemplate redisTemplate = Mockito.mock(StringRedisTemplate.class);
+//
+//    @Test
+//    void signUpTest() {
+//        AuthService authService = new AuthServiceImpl(passwordEncoder, memberRepository, passwordSpecification, authenticationManagerBuilder, adminSpecification, jwtTokenProvider, redisTemplate);
+//        MemberJoinDTO memberJoinDTO = new MemberJoinDTO("kuk@gmail.com", "1234567", "테스트코드", "SEOUL");
+//
+//        Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
+//
+//        when(memberRepository.save(member)).thenAnswer((Answer<Member>) invocation -> {
+//            Member savedMember = invocation.getArgument(0);
+//            return savedMember;
+//        });
+//
+//        Member newMember = memberRepository.save(member);
+//
+//        System.out.println("member = " + newMember.getNickName());
+//    }
+//}

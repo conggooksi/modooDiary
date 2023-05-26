@@ -18,11 +18,14 @@ import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.provider.JwtTokenProvider;
 import com.secondWind.modooDiary.common.result.JsonResultData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
@@ -146,7 +150,21 @@ public class AuthServiceImpl implements AuthService{
                         .errorMessage(MemberErrorCode.NOT_FOUND_MEMBER.getMessage())
                         .build());
 
-        member.changePassword(passwordUpdateRequest.getPassword(), passwordEncoder);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+
+        log.info(userDetails.getUsername());
+
+
+        if (passwordEncoder.matches("1234", member.getPassword())) {
+            member.changePassword(passwordUpdateRequest.getPassword(), passwordEncoder);
+        } else {
+            throw ApiException.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
+                    .errorMessage(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getMessage())
+                    .build();
+        }
     }
 
     private TokenDTO getTokenDTO(Authentication authentication) {

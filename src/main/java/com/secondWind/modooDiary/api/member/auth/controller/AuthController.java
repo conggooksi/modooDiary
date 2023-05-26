@@ -132,9 +132,9 @@ public class AuthController {
     @Operation(summary = "비밀번호 변경 API")
     @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        if (authorization != null) {
-            String authBasic = authorization.substring(BASIC_PREFIX.length());
+            @RequestHeader(value = "BasicString") String basicString) {
+        if (basicString != null) {
+            String authBasic = basicString.substring(BASIC_PREFIX.length());
 
             String decodedAuthBasic = new String(Base64.getDecoder().decode(authBasic), StandardCharsets.UTF_8);
             String[] authUserInfo = decodedAuthBasic.split(":");

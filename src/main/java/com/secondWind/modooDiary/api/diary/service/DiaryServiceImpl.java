@@ -28,11 +28,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -146,12 +148,14 @@ public class DiaryServiceImpl implements DiaryService {
 
         Diary diary = findDiary(diaryId);
 
-        Member member = memberRepository.findById(updateDiaryRequest.getMemberId()).orElseThrow(
-                () -> ApiException.builder()
-                        .errorMessage(MemberErrorCode.NOT_FOUND_MEMBER.getMessage())
-                        .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
-                        .status(HttpStatus.BAD_REQUEST)
-                        .build());
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!Objects.equals(memberId, diary.getMember().getId().toString())) {
+            throw ApiException.builder()
+                    .errorMessage(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getMessage())
+                    .errorCode(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getCode())
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
 
         diary.updateDiaryBuilder()
                 .title(updateDiaryRequest.getTitle())
