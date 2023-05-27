@@ -132,7 +132,8 @@ public class AuthController {
     @Operation(summary = "비밀번호 변경 API")
     @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(
-            @RequestHeader(value = "BasicString") String basicString) {
+            @RequestHeader(value = "BasicString") String basicString,
+            @RequestBody UpdatePasswordRequest updatePasswordRequest) {
         if (basicString != null) {
             String authBasic = basicString.substring(BASIC_PREFIX.length());
 
