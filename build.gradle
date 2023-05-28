@@ -66,6 +66,8 @@ dependencies {
 
 	implementation 'net.gpedro.integrations.slack:slack-webhook:1.4.0'
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+	implementation 'com.auth0:java-jwt:4.3.0'
 }
 tasks.named('test') {
 	useJUnitPlatform()

@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final StringRedisTemplate redisTemplate;
 
     private static final String[] AUTH_WHITELIST = {
-        "/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**"
+        "/api/auth/login", "/swagger-ui/**", "/v3/api-docs/**"
     };
 
     @Bean

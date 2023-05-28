@@ -132,33 +132,12 @@ public class AuthController {
     @Operation(summary = "비밀번호 변경 API")
     @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(
-            @RequestHeader(value = "BasicString") String basicString,
-            @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        if (basicString != null) {
-            String authBasic = basicString.substring(BASIC_PREFIX.length());
+            @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        authService.updatePassword(passwordUpdateRequest);
 
-            String decodedAuthBasic = new String(Base64.getDecoder().decode(authBasic), StandardCharsets.UTF_8);
-            String[] authUserInfo = decodedAuthBasic.split(":");
-
-            String email = authUserInfo[0];
-            String password = authUserInfo[1];
-
-            PasswordUpdateRequest passwordUpdateRequest = new PasswordUpdateRequest();
-            passwordUpdateRequest.setEmail(email);
-            passwordUpdateRequest.setPassword(password);
-
-            authService.updatePassword(passwordUpdateRequest);
-
-            return ResponseHandler.generate()
-                    .data(null)
-                    .status(HttpStatus.OK)
-                    .build();
-        } else {
-            return ResponseHandler.failResultGenerate()
-                    .errorMessage(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getMessage())
-                    .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build();
-        }
+        return ResponseHandler.generate()
+                .data(null)
+                .status(HttpStatus.OK)
+                .build();
     }
 }

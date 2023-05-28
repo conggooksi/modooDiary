@@ -142,27 +142,25 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public void updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
-        Member member = memberRepository.findByEmail(passwordUpdateRequest.getEmail())
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+
+        Member member = memberRepository.findById(Long.parseLong(userDetails.getUsername()))
                 .orElseThrow(() -> ApiException.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
                         .errorMessage(MemberErrorCode.NOT_FOUND_MEMBER.getMessage())
                         .build());
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-
-        log.info(userDetails.getUsername());
-
-
-        if (passwordEncoder.matches("1234", member.getPassword())) {
-            member.changePassword(passwordUpdateRequest.getPassword(), passwordEncoder);
+        if (passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), member.getPassword())) {
+            member.changePassword(passwordUpdateRequest.getNewPassword(), passwordEncoder);
         } else {
             throw ApiException.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
-                    .errorMessage(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getMessage())
+                    .errorCode(MemberErrorCode.WRONG_ENTERED_PASSWORD.getCode())
+                    .errorMessage(MemberErrorCode.WRONG_ENTERED_PASSWORD.getMessage())
                     .build();
         }
     }
