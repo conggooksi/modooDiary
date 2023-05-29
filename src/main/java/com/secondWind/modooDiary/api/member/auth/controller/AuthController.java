@@ -132,7 +132,7 @@ public class AuthController {
     @Operation(summary = "비밀번호 변경 API")
     @PatchMapping("/password")
     public ResponseEntity<?> updatePassword(
-            @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+            @Valid @RequestBody PasswordUpdateRequest passwordUpdateRequest) {
         authService.updatePassword(passwordUpdateRequest);
 
         return ResponseHandler.generate()
