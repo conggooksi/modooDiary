@@ -190,10 +190,12 @@ public class DiaryServiceImpl implements DiaryService {
         Diary diary = findDiary(diaryId);
 
         diary.deleteDiary();
-        Optional<Drawing> optionalDrawing = drawingRepository.findById(diary.getDrawing().getId());
-        if (optionalDrawing.isPresent()) {
-            Drawing drawing = optionalDrawing.get();
-            drawing.deleteDrawing();
+        if (diary.getDrawing() != null) {
+            Optional<Drawing> optionalDrawing = drawingRepository.findById(diary.getDrawing().getId());
+            if (optionalDrawing.isPresent()) {
+                Drawing drawing = optionalDrawing.get();
+                drawing.deleteDrawing();
+            }
         }
     }
 
