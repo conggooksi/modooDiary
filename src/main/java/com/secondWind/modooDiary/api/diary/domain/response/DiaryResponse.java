@@ -1,6 +1,6 @@
 package com.secondWind.modooDiary.api.diary.domain.response;
 
-import com.secondWind.modooDiary.api.diary.domain.entity.link.Sticker;
+import com.secondWind.modooDiary.api.diary.domain.entity.Drawing;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -17,15 +17,18 @@ public class DiaryResponse {
     private int unlikeCount;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+
     private List<Long> recommendedMemberIds;
+    private Drawing drawing;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public DiaryResponse(Long id, String nickName, String title, String weather, String content, int recommendCount, int unlikeCount, LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public DiaryResponse(Long id, String nickName, String title, String weather, String content, Drawing drawing, int recommendCount, int unlikeCount, LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.id = id;
         this.nickName = nickName;
         this.title = title;
         this.weather = weather;
         this.content = content;
+        this.drawing = drawing;
         this.recommendCount = recommendCount;
         this.unlikeCount = unlikeCount;
         this.createdTime = createdTime;

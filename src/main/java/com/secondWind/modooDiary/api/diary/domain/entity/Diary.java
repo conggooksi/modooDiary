@@ -37,11 +37,15 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<DiaryRecommend> diaryRecommendLIst = new ArrayList<>();
 
-    @OneToOne(mappedBy = "diary",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "diary", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private StickerCount stickerCount;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="drawing_id")
+    private Drawing drawing;
+
     @Builder(builderMethodName = "of", builderClassName = "of")
-    public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount, int isDeleted, List<DiaryRecommend> diaryRecommendLIst) {
+    public Diary(Long diaryId, Member member, String title, Weather weather, String content, int recommendCount, int isDeleted, List<DiaryRecommend> diaryRecommendLIst, Drawing drawing) {
         this.id = diaryId;
         this.member = member;
         this.title = title;
@@ -50,21 +54,24 @@ public class Diary extends BaseEntity {
         this.recommendCount = recommendCount;
         this.isDeleted = isDeleted;
         this.diaryRecommendLIst = diaryRecommendLIst;
+        this.drawing = drawing;
     }
 
     @Builder(builderMethodName = "createDiaryBuilder", builderClassName = "createDiaryBuilder")
-    public Diary(Member member, String title, Weather weather, String content) {
+    public Diary(Member member, String title, Weather weather, String content, Drawing drawing) {
         this.member = member;
         this.title = title;
         this.weather = weather;
         this.content = content;
         this.recommendCount = 0;
+        if (drawing != null) this.drawing = drawing;
     }
 
     @Builder(builderMethodName = "updateDiaryBuilder", builderClassName = "updateDiaryBuilder")
-    public void changeDiary(String title, String content) {
+    public void changeDiary(String title, String content, Drawing drawing) {
         if (title != null) this.title = title;
         if (content != null) this.content = content;
+        if (drawing != null) this.drawing = drawing;
     }
 
 //    @Builder(builderMethodName = "deleteDiaryBuilder", builderClassName = "deleteDiaryBuilder")

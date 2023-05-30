@@ -2,6 +2,7 @@ package com.secondWind.modooDiary.api.diary.service;
 
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
+import com.secondWind.modooDiary.api.diary.domain.entity.Drawing;
 import com.secondWind.modooDiary.api.diary.domain.entity.Weather;
 import com.secondWind.modooDiary.api.diary.domain.entity.link.DiaryRecommend;
 import com.secondWind.modooDiary.api.diary.domain.entity.link.Sticker;
@@ -9,10 +10,7 @@ import com.secondWind.modooDiary.api.diary.domain.entity.link.StickerCount;
 import com.secondWind.modooDiary.api.diary.domain.request.*;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
-import com.secondWind.modooDiary.api.diary.repository.DiaryRecommendRepository;
-import com.secondWind.modooDiary.api.diary.repository.DiaryRepository;
-import com.secondWind.modooDiary.api.diary.repository.StickerCountRepository;
-import com.secondWind.modooDiary.api.diary.repository.StickerRepository;
+import com.secondWind.modooDiary.api.diary.repository.*;
 import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
@@ -35,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +47,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final DiaryRecommendRepository diaryRecommendRepository;
     private final StickerRepository stickerRepository;
     private final StickerCountRepository stickerCountRepository;
+    private final DrawingRepository drawingRepository;
 
     @Override
     @Transactional
@@ -62,6 +62,15 @@ public class DiaryServiceImpl implements DiaryService {
                 memberIds.add(diaryRecommend.getMember().getId());
             }
             diaryResponse.setRecommendedMemberIds(memberIds);
+
+            if (diaryResponse.getDrawing() != null) {
+                Optional<Drawing> optionalDrawing = drawingRepository.findById(diaryResponse.getDrawing().getId());
+                if (optionalDrawing.isPresent()) {
+                    Drawing drawing = optionalDrawing.get();
+                    diaryResponse.setDrawing(drawing);
+                }
+
+            }
         }
         return diaryResponses;
     }
@@ -78,11 +87,13 @@ public class DiaryServiceImpl implements DiaryService {
 
 
         Weather weatherStatus = getWeather(writeDiaryRequest, member);
-
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
 
         filteringAbuseInContent(writeDiaryRequest);
-        Diary diary = diaryRepository.save(WriteDiaryRequest.createDiary(writeDiaryRequest, member));
+
+        Drawing drawing = drawingRepository.save(writeDiaryRequest.getDrawing());
+        Diary newDiaryRequest = WriteDiaryRequest.createDiary(writeDiaryRequest, member, drawing);
+        Diary diary = diaryRepository.save(newDiaryRequest);
 
         return DiaryResponseToSlack.of()
                 .diaryId(diary.getMember().getId())
@@ -176,6 +187,11 @@ public class DiaryServiceImpl implements DiaryService {
         Diary diary = findDiary(diaryId);
 
         diary.deleteDiary();
+        Optional<Drawing> optionalDrawing = drawingRepository.findById(diary.getDrawing().getId());
+        if (optionalDrawing.isPresent()) {
+            Drawing drawing = optionalDrawing.get();
+            drawing.deleteDrawing();
+        }
     }
 
     @Override

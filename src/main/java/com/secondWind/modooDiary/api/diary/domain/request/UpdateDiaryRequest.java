@@ -1,9 +1,8 @@
 package com.secondWind.modooDiary.api.diary.domain.request;
 
-import io.swagger.v3.oas.annotations.Parameter;
+import com.secondWind.modooDiary.api.diary.domain.entity.Drawing;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,8 @@ public class UpdateDiaryRequest {
 
     @Schema(nullable = true)
     private String content;
+
+    private Drawing drawing;
 
     @Builder(builderMethodName = "of", builderClassName = "of")
     public UpdateDiaryRequest(Long memberId, String title, String content) {
