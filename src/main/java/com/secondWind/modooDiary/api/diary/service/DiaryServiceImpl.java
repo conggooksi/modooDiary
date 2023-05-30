@@ -90,8 +90,11 @@ public class DiaryServiceImpl implements DiaryService {
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
 
         filteringAbuseInContent(writeDiaryRequest);
+        Drawing drawing = null;
 
-        Drawing drawing = drawingRepository.save(writeDiaryRequest.getDrawing());
+        if (writeDiaryRequest.getDrawing() != null) {
+            drawing = drawingRepository.save(writeDiaryRequest.getDrawing());
+        }
         Diary newDiaryRequest = WriteDiaryRequest.createDiary(writeDiaryRequest, member, drawing);
         Diary diary = diaryRepository.save(newDiaryRequest);
 
