@@ -97,6 +97,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public TokenDTO reissue(TokenRequestDTO tokenRequestDTO) {
         if (!jwtTokenProvider.validateToken(tokenRequestDTO.getRefreshToken())) {
             throw new CustomAuthException(JsonResultData
@@ -121,6 +122,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public void logout(TokenRequestDTO tokenRequestDTO) {
         if (!jwtTokenProvider.validateToken(tokenRequestDTO.getAccessToken())) {
             throw new CustomAuthException(JsonResultData
@@ -177,7 +179,7 @@ public class AuthServiceImpl implements AuthService{
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(),
                         tokenDTO.getRefreshToken(),
-                        tokenDTO.getRefreshTokenExpiresIn(),
+                        tokenDTO.getAccessTokenExpiresIn(),
                         TimeUnit.MILLISECONDS);
 
         if (optionalMember.isPresent()) {
