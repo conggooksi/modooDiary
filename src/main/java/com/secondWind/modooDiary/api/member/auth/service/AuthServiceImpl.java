@@ -177,7 +177,7 @@ public class AuthServiceImpl implements AuthService{
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(),
                         tokenDTO.getRefreshToken(),
-                        tokenDTO.getRefreshTokenExpiresIn(),
+                        tokenDTO.getAccessTokenExpiresIn(),
                         TimeUnit.MILLISECONDS);
 
         if (optionalMember.isPresent()) {
