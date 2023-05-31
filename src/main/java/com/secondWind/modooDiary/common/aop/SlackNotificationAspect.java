@@ -71,6 +71,6 @@ public class SlackNotificationAspect {
             slackMessage.setAttachments(Collections.singletonList(slackAttachment));
         }
 
-//        slackApi.call(slackMessage);
+        slackApi.call(slackMessage);
     }
 }
