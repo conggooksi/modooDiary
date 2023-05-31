@@ -53,10 +53,10 @@ public class SlackNotificationAspect {
         text.append("작성자 : ");
         text.append(((DiaryResponseToSlack) result).getNickName());
         text.append("\n");
-        text.append("제  목 : ");
+        text.append("제    목 : ");
         text.append(((DiaryResponseToSlack) result).getTitle());
         text.append("\n");
-        text.append("일  기 : ");
+        text.append("일    기 : ");
         text.append(((DiaryResponseToSlack) result).getContent());
         text.append("\n");
 

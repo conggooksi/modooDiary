@@ -89,7 +89,9 @@ public class DiaryServiceImpl implements DiaryService {
         Weather weatherStatus = getWeather(writeDiaryRequest, member);
         writeDiaryRequest.setWeather(weatherStatus.getStatusId().toString());
 
-        filteringAbuseInContent(writeDiaryRequest);
+        if (writeDiaryRequest.getContent() != null) {
+            filteringAbuseInContent(writeDiaryRequest);
+        }
         Drawing drawing = null;
 
         if (writeDiaryRequest.getDrawing() != null) {
