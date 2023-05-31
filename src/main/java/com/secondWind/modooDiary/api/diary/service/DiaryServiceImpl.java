@@ -98,10 +98,10 @@ public class DiaryServiceImpl implements DiaryService {
             drawing = drawingRepository.save(writeDiaryRequest.getDrawing());
         }
         Diary newDiaryRequest = WriteDiaryRequest.createDiary(writeDiaryRequest, member, drawing);
-//        Diary diary = diaryRepository.save(newDiaryRequest);
+        Diary diary = diaryRepository.save(newDiaryRequest);
 
         return DiaryResponseToSlack.of()
-                .diary(newDiaryRequest)
+                .diary(diary)
                 .build();
     }
 
