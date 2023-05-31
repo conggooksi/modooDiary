@@ -109,7 +109,7 @@ public class AuthServiceImpl implements AuthService{
 
         Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDTO.getAccessToken());
 
-        String refreshToken = redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        String refreshToken = redisTemplate.opsForValue().get("RT:" + tokenRequestDTO.getAccessToken());
         if (refreshToken == null || !refreshToken.equals(tokenRequestDTO.getRefreshToken())) {
             throw new CustomAuthException(JsonResultData
                     .failResultBuilder()
@@ -177,7 +177,7 @@ public class AuthServiceImpl implements AuthService{
         TokenDTO tokenDTO = jwtTokenProvider.generateTokenDTO(authentication, nickName);
 
         redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(),
+                .set("RT:" + tokenDTO.getAccessToken(),
                         tokenDTO.getRefreshToken(),
                         tokenDTO.getRefreshTokenExpiresIn(),
                         TimeUnit.MILLISECONDS);
