@@ -2,6 +2,7 @@ package com.secondWind.modooDiary.common.aop;
 
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponseToSlack;
 import net.gpedro.integrations.slack.SlackApi;
+import net.gpedro.integrations.slack.SlackAttachment;
 import net.gpedro.integrations.slack.SlackMessage;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -9,6 +10,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Aspect
 @Component
@@ -43,6 +46,7 @@ public class SlackNotificationAspect {
     }
 
     private void sendSlackMessage(Object result) {
+
         StringBuffer text = new StringBuffer();
         text.append("https://modoo-diary.vercel.app/");
         text.append("\n");
@@ -54,10 +58,19 @@ public class SlackNotificationAspect {
         text.append("\n");
         text.append("일  기 : ");
         text.append(((DiaryResponseToSlack) result).getContent());
+        text.append("\n");
 
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setText(text.toString());
 
-        slackApi.call(slackMessage);
+        SlackAttachment slackAttachment = new SlackAttachment();
+        String displayUrl = ((DiaryResponseToSlack) result).getDisplayUrl();
+        if (displayUrl != null) {
+            slackAttachment.setImageUrl(displayUrl);
+            slackAttachment.setFallback("이미지 로드에 실패했습니다.");
+            slackMessage.setAttachments(Collections.singletonList(slackAttachment));
+        }
+
+//        slackApi.call(slackMessage);
     }
 }

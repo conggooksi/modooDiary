@@ -1,17 +1,21 @@
 package com.secondWind.modooDiary.api.member.auth.service;
 
 import com.secondWind.modooDiary.api.member.auth.domain.attribute.OAuthAttributes;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.SessionUser;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
@@ -30,9 +34,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         Member member = saveOrUpdate(attributes);
-//        httpSession.setAttribute("user", new SessionUser);
+        httpSession.setAttribute("user", new SessionUser(member));
 
-        return null;
+        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(
+                member.getAuthority().toString())), attributes.getAttributes(), attributes.getNameAttributeKey());
     }
 
     private Member saveOrUpdate(OAuthAttributes attributes) {
