@@ -134,8 +134,8 @@ public class AuthServiceImpl implements AuthService{
 
         Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDTO.getAccessToken());
 
-        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
-            redisTemplate.delete("RT:" + authentication.getName());
+        if (redisTemplate.opsForValue().get("RT:" + tokenRequestDTO.getAccessToken()) != null) {
+            redisTemplate.delete("RT:" + tokenRequestDTO.getAccessToken());
         }
 
         Long expiration = jwtTokenProvider.getExpiration(tokenRequestDTO.getAccessToken());
