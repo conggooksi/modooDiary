@@ -99,6 +99,8 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public TokenDTO reissue(TokenRequestDTO tokenRequestDTO) {
+
+        log.info("acc : " + tokenRequestDTO.getAccessToken() + "ref : " + tokenRequestDTO.getRefreshToken());
         if (!jwtTokenProvider.validateToken(tokenRequestDTO.getRefreshToken())) {
             throw new CustomAuthException(JsonResultData
                     .failResultBuilder()
