@@ -89,7 +89,7 @@ public class DiaryController {
 
     @Operation(summary = "스티커 API")
     @PutMapping("/sticker")
-    public ResponseEntity<?> updateSticker(StickerRequest stickerRequest) {
+    public ResponseEntity<?> updateSticker(@RequestBody StickerRequest stickerRequest) {
         diaryService.updateSticker(stickerRequest);
         return ResponseHandler.generate()
                 .data(null)
