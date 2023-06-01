@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.config;
 
+import com.google.cloud.storage.HttpMethod;
 import com.secondWind.modooDiary.common.interceptor.LoggerInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loggerInterceptor)
                 .excludePathPatterns("/swagger-ui/**")
-                .excludePathPatterns("/v3/api-docs/**");
+                .excludePathPatterns("/v3/api-docs/**")
+                .excludePathPatterns(HttpMethod.GET.name());
     }
 }
