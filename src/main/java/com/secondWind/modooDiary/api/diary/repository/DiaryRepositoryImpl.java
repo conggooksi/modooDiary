@@ -40,7 +40,7 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         weather.description,
                         diary.content,
                         diary.drawing,
-                        diary.recommendCount,
+                        stickerCount.recommendCount,
                         stickerCount.unlikeCount,
                         diary.createdDate,
                         diary.lastModifiedDate))
