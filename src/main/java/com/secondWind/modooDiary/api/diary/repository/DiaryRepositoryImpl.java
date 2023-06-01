@@ -72,6 +72,7 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                         diary.title,
                         weather.description,
                         diary.content,
+                        diary.drawing,
                         stickerCount.recommendCount,
                         stickerCount.unlikeCount,
                         diary.createdDate,
@@ -80,6 +81,7 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                 .innerJoin(diary.member, member)
                 .innerJoin(diary.weather, weather)
                 .leftJoin(diary.stickerCount, stickerCount)
+                .leftJoin(diary.drawing, drawing)
                 .where(diary.id.eq(diaryId))
                 .fetchOne());
     }

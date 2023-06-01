@@ -146,10 +146,9 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Member member = memberRepository.findById(Long.parseLong(userDetails.getUsername()))
+        Member member = memberRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> ApiException.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .errorCode(MemberErrorCode.NOT_FOUND_MEMBER.getCode())
