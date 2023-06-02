@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.member.service;
 
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
+import com.secondWind.modooDiary.api.member.domain.dto.request.EmailUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.MemberSearch;
 import com.secondWind.modooDiary.api.member.domain.dto.request.NickNameUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.RegionUpdateRequest;
@@ -15,4 +16,6 @@ public interface MemberService {
     Long updateNickName(NickNameUpdateRequest nickNameUpdateRequest);
 
     Long updateRegion(RegionUpdateRequest regionUpdateRequest);
+
+    Long updateEmail(EmailUpdateRequest idUpdateRequest);
 }

@@ -57,7 +57,8 @@ public class MemberRepositoryImpl implements MemberCustomRepository{
         return Optional.ofNullable(queryFactory.select(Projections.constructor(MemberDetail.class,
                         member.id,
                         member.email,
-                        member.nickName))
+                        member.nickName,
+                        member.region))
                 .from(member)
                 .where(memberIdEq(memberId))
                 .fetchOne());

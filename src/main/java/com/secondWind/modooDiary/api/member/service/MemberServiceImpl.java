@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.member.service;
 
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
+import com.secondWind.modooDiary.api.member.domain.dto.request.EmailUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.MemberSearch;
 import com.secondWind.modooDiary.api.member.domain.dto.request.NickNameUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.RegionUpdateRequest;
@@ -51,6 +52,13 @@ public class MemberServiceImpl implements MemberService {
     public Long updateRegion(RegionUpdateRequest regionUpdateRequest) {
         Member member = findById(regionUpdateRequest.getMemberId());
         member.changeRegion(regionUpdateRequest.getRegion());
+        return member.getId();
+    }
+
+    @Override
+    public Long updateEmail(EmailUpdateRequest emailUpdateRequest) {
+        Member member = findById(emailUpdateRequest.getMemberId());
+        member.changeEmail(emailUpdateRequest.getEmail());
         return member.getId();
     }
 

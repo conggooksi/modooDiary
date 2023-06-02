@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.api.member.controller;
 
 import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
+import com.secondWind.modooDiary.api.member.domain.dto.request.EmailUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.MemberSearch;
 import com.secondWind.modooDiary.api.member.domain.dto.request.NickNameUpdateRequest;
 import com.secondWind.modooDiary.api.member.domain.dto.request.RegionUpdateRequest;
@@ -50,7 +51,6 @@ public class MemberApiController {
                 .status(HttpStatus.OK)
                 .data(memberId)
                 .build();
-
     }
 
     @Operation(summary = "지역 변경 API")
@@ -62,4 +62,15 @@ public class MemberApiController {
                 .data(memberId)
                 .build();
     }
+
+    @Operation(summary = "아이디 변경??? API")
+    @PatchMapping("/email")
+    public ResponseEntity<?> updateEmail(@RequestBody EmailUpdateRequest emailUpdateRequest) {
+        Long memberId = memberService.updateEmail(emailUpdateRequest);
+        return ResponseHandler.generate()
+                .status(HttpStatus.OK)
+                .data(memberId)
+                .build();
+    }
+
 }

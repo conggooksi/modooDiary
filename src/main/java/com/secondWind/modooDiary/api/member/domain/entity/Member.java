@@ -81,4 +81,8 @@ public class Member {
     public void changeRegion(String region) {
         this.region = OpenweatherRegion.valueOf(region);
     }
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
 }
