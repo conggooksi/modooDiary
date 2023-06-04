@@ -68,6 +68,9 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 
 	implementation 'com.auth0:java-jwt:4.3.0'
+
+	// 이메일 인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 tasks.named('test') {
 	useJUnitPlatform()

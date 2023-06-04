@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum AuthErrorCode {
+    FAIL_SEND_CONFIMEAIL("FAIL_SEND_CONFIMEAIL", "인증 이메일을 발송하는데 실패했습니다."),
 
     EMAIL_NOT_ENOUGH_CONDITION("EMAIL_NOT_ENOUGH_CONDITION", "이메일 조건을 만족하지 못했습니다."),
     PASSWORD_NOT_ENOUGH_CONDITION("PASSWORD_NOT_ENOUGH_CONDITION", "패스워드 조건을 만족하지 못했습니다."),

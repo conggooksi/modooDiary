@@ -7,6 +7,8 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
+import com.secondWind.modooDiary.api.member.auth.service.EmailService;
+import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +32,7 @@ import java.util.Base64;
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
     private final AuthService authService;
+    private final EmailService emailService;
 
 
     @Operation(summary = "회원가입 API")
@@ -140,4 +143,16 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build();
     }
+
+    @Operation(summary = "이메일발송 API")
+    @GetMapping("/emailConfirm")
+    public ResponseEntity<?> emailConfirm(@RequestParam String email) {
+        String confirmKey = emailService.sendEmailConfirm(email);
+
+        return ResponseHandler.generate()
+                .data(confirmKey)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
 }
