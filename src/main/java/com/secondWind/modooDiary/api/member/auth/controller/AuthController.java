@@ -148,7 +148,7 @@ public class AuthController {
     @GetMapping("/emailConfirm")
     public ResponseEntity<?> emailConfirm(@RequestParam String email) {
         String confirmKey = emailService.sendEmailConfirm(email);
-
+        //
         return ResponseHandler.generate()
                 .data(confirmKey)
                 .status(HttpStatus.OK)
