@@ -166,7 +166,7 @@ public class DiaryServiceImpl implements DiaryService {
             throw ApiException.builder()
                     .errorMessage(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getMessage())
                     .errorCode(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getCode())
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.UNAUTHORIZED)
                     .build();
         }
 
@@ -187,6 +187,15 @@ public class DiaryServiceImpl implements DiaryService {
     @Transactional
     public void deleteDiary(Long diaryId) {
         Diary diary = findDiary(diaryId);
+
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!Objects.equals(memberId, diary.getMember().getId().toString())) {
+            throw ApiException.builder()
+                    .errorMessage(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getMessage())
+                    .errorCode(DiaryErrorCode.NOT_AUTHORIZATION_DIARY.getCode())
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
+        }
 
         diary.deleteDiary();
         if (diary.getDrawing() != null) {
