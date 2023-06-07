@@ -49,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Long updateRegion(RegionUpdateRequest regionUpdateRequest) {
         Member member = findById(regionUpdateRequest.getMemberId());
         member.changeRegion(regionUpdateRequest.getRegion());
@@ -56,6 +57,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Long updateEmail(EmailUpdateRequest emailUpdateRequest) {
         Member member = findById(emailUpdateRequest.getMemberId());
         member.changeEmail(emailUpdateRequest.getEmail());
