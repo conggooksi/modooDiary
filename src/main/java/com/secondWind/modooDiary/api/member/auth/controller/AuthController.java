@@ -9,20 +9,29 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.api.member.auth.service.EmailService;
 import com.secondWind.modooDiary.common.exception.ApiException;
+import com.secondWind.modooDiary.common.exception.code.AuthErrorCode;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Tag(name = "auth", description = "인증 API")
 @RestController
@@ -34,6 +43,12 @@ public class AuthController {
     private final AuthService authService;
     private final EmailService emailService;
 
+    private Map<String, String> confirmEmail;
+
+    @PostConstruct
+    public void postConstruct() {
+        this.confirmEmail = new ConcurrentHashMap<>();
+    }
 
     @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
@@ -140,17 +155,6 @@ public class AuthController {
 
         return ResponseHandler.generate()
                 .data(null)
-                .status(HttpStatus.OK)
-                .build();
-    }
-
-    @Operation(summary = "이메일발송 API")
-    @GetMapping("/emailConfirm")
-    public ResponseEntity<?> emailConfirm(@RequestParam String email) {
-        String confirmKey = emailService.sendEmailConfirm(email);
-        //
-        return ResponseHandler.generate()
-                .data(confirmKey)
                 .status(HttpStatus.OK)
                 .build();
     }

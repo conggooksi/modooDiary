@@ -1,7 +1,6 @@
 package com.secondWind.modooDiary.api.member.auth.domain.dto;
 
 import com.secondWind.modooDiary.api.member.auth.enumerate.OpenweatherRegion;
-import com.secondWind.modooDiary.api.member.auth.enumerate.PublicRegion;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.enumerate.Authority;
 import lombok.Builder;
