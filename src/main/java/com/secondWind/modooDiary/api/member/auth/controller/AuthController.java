@@ -21,6 +21,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
+
+    @Value("${google.client.id}")
+    private String googleClientId;
+
+    @Value("${google.client.pw}")
+    private String googleClientPw;
+
     private final AuthService authService;
     private final EmailService emailService;
 
@@ -157,5 +165,12 @@ public class AuthController {
                 .data(null)
                 .status(HttpStatus.OK)
                 .build();
+    }
+
+    @Operation(summary = "구글 로그인 API")
+    public String loginUrlGoogle() {
+        String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
+                + "&redirect_uri=http://localhost:8080/api/v1/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
+        return reqUrl;
     }
 }
