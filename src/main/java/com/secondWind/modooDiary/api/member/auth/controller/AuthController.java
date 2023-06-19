@@ -2,22 +2,15 @@ package com.secondWind.modooDiary.api.member.auth.controller;
 
 import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.api.member.auth.service.EmailService;
-import com.secondWind.modooDiary.common.exception.ApiException;
-import com.secondWind.modooDiary.common.exception.code.AuthErrorCode;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Tag(name = "auth", description = "인증 API")
@@ -39,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin("*")
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
 
@@ -168,10 +162,31 @@ public class AuthController {
     }
 
     @Operation(summary = "구글 로그인 API")
-    @GetMapping("/google")
+    @PostMapping("/oauth2/google")
     public String loginUrlGoogle() {
         String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
-                + "&redirect_uri=http://localhost:8080/api/v1/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
+                + "&redirect_uri=http://localhost:8080/api/auth/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
         return reqUrl;
+    }
+
+    @GetMapping("/oauth2/google")
+    public String loginGoogle(@RequestParam(value = "code") String authCode){
+        RestTemplate restTemplate = new RestTemplate();
+        GoogleRequest googleOAuthRequestParam = GoogleRequest
+                .builder()
+                .clientId(googleClientId)
+                .clientSecret(googleClientPw)
+                .code(authCode)
+                .redirectUri("http://localhost:8080/api/auth/oauth2/google")
+                .grantType("authorization_code").build();
+        ResponseEntity<GoogleResponse> resultEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/token",
+                googleOAuthRequestParam, GoogleResponse.class);
+        String jwtToken=resultEntity.getBody().getId_token();
+        Map<String, String> map=new HashMap<>();
+        map.put("id_token",jwtToken);
+        ResponseEntity<GoogleInfResponse> resultEntity2 = restTemplate.postForEntity("https://oauth2.googleapis.com/tokeninfo",
+                map, GoogleInfResponse.class);
+        String email=resultEntity2.getBody().getEmail();
+        return email;
     }
 }
