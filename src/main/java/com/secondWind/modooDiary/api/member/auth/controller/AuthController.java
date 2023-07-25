@@ -5,6 +5,7 @@ import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.api.member.auth.service.EmailService;
+import com.secondWind.modooDiary.common.component.GoogleLogin;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -35,17 +37,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @CrossOrigin("*")
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
-
     @Value("${google.client.id}")
     private String googleClientId;
-
-    @Value("${google.client.pw}")
-    private String googleClientPw;
-
     private final AuthService authService;
     private final EmailService emailService;
-
     private Map<String, String> confirmEmail;
+    private final GoogleLogin googleLogin;
 
     @PostConstruct
     public void postConstruct() {
@@ -162,31 +159,20 @@ public class AuthController {
     }
 
     @Operation(summary = "구글 로그인 API")
-    @PostMapping("/oauth2/google")
-    public String loginUrlGoogle() {
+    @GetMapping("/google")
+    public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
         String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
                 + "&redirect_uri=http://localhost:8080/api/auth/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
-        return reqUrl;
+        response.sendRedirect(reqUrl);
     }
 
     @GetMapping("/oauth2/google")
     public String loginGoogle(@RequestParam(value = "code") String authCode){
-        RestTemplate restTemplate = new RestTemplate();
-        GoogleRequest googleOAuthRequestParam = GoogleRequest
-                .builder()
-                .clientId(googleClientId)
-                .clientSecret(googleClientPw)
-                .code(authCode)
-                .redirectUri("http://localhost:8080/api/auth/oauth2/google")
-                .grantType("authorization_code").build();
-        ResponseEntity<GoogleResponse> resultEntity = restTemplate.postForEntity("https://oauth2.googleapis.com/token",
-                googleOAuthRequestParam, GoogleResponse.class);
-        String jwtToken=resultEntity.getBody().getId_token();
-        Map<String, String> map=new HashMap<>();
-        map.put("id_token",jwtToken);
-        ResponseEntity<GoogleInfResponse> resultEntity2 = restTemplate.postForEntity("https://oauth2.googleapis.com/tokeninfo",
-                map, GoogleInfResponse.class);
-        String email=resultEntity2.getBody().getEmail();
+        GoogleInfoResponse googleInfoResponse = googleLogin.getGoogleInfo(authCode);
+        String email=googleInfoResponse.getEmail();
+
+        log.info(email);
+
         return email;
     }
 }

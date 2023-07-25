@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GoogleInfResponse {
+public class GoogleInfoResponse {
     private String iss;
     private String azp;
     private String aud;

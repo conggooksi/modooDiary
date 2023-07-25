@@ -1,10 +1,10 @@
 package com.secondWind.modooDiary.api.member.auth.domain.dto;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class GoogleResponse {
     private String access_token; // 애플리케이션이 Google API 요청을 승인하기 위해 보내는 토큰
     private String expires_in;   // Access Token의 남은 수명
