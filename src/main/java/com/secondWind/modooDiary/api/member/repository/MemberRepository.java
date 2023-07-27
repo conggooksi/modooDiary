@@ -12,4 +12,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberCus
     Optional<Member> findByEmail(String email);
 
     boolean existsByNickNameAndIsDeletedFalse(String nickName);
+
+    Optional<Member> findByEmailAndIsDeletedFalse(String email);
 }

@@ -3,14 +3,12 @@ package com.secondWind.modooDiary.api.member.auth.service;
 import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.diary.domain.spec.AdminSpecification;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import com.secondWind.modooDiary.api.member.auth.domain.spec.EmailSpecification;
 import com.secondWind.modooDiary.api.member.auth.domain.spec.PasswordSpecification;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
+import com.secondWind.modooDiary.common.component.GoogleLogin;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.CustomAuthException;
 import com.secondWind.modooDiary.common.exception.code.AuthErrorCode;
@@ -38,19 +36,14 @@ import java.util.concurrent.TimeUnit;
 public class AuthServiceImpl implements AuthService{
 
     private final PasswordEncoder passwordEncoder;
-
     private final MemberRepository memberRepository;
-
     private final EmailSpecification emailSpecification;
     private final PasswordSpecification passwordSpecification;
-
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
     private final AdminSpecification adminSpecification;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final StringRedisTemplate redisTemplate;
+    private final GoogleLogin googleLogin;
 
     @Override
     @Transactional
@@ -163,6 +156,21 @@ public class AuthServiceImpl implements AuthService{
                     .errorMessage(MemberErrorCode.WRONG_ENTERED_PASSWORD.getMessage())
                     .build();
         }
+    }
+
+    @Override
+    public TokenDTO getGoogleInfo(String authCode) {
+        GoogleInfoResponse googleInfoResponse = googleLogin.getGoogleInfo(authCode);
+        String email=googleInfoResponse.getEmail();
+
+        Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+        }
+
+
+        return null;
     }
 
     private TokenDTO getTokenDTO(Authentication authentication) {

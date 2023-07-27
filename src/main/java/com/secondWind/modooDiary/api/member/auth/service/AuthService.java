@@ -17,4 +17,6 @@ public interface AuthService {
     void logout(TokenRequestDTO tokenRequestDTO);
 
     void updatePassword(PasswordUpdateRequest passwordUpdateRequest);
+
+    TokenDTO getGoogleInfo(String authCode);
 }
