@@ -20,12 +20,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -167,12 +165,22 @@ public class AuthController {
     }
 
     @GetMapping("/oauth2/google")
-    public String loginGoogle(@RequestParam(value = "code") String authCode){
-        GoogleInfoResponse googleInfoResponse = googleLogin.getGoogleInfo(authCode);
-        String email=googleInfoResponse.getEmail();
+    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
+        TokenDTO tokenDTO = authService.loginByGoogle(authCode);
 
-        log.info(email);
+        if (tokenDTO.getRefreshToken() != null) {
+            return ResponseHandler.generate()
+                    .data(tokenDTO)
+                    .status(HttpStatus.OK)
+                    .build();
+        } else {
+            // TODO 뒷단에서 email을 굳이 담아야 할까? 굳이 redirect를 해야 할까?
+            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
 
-        return email;
+            return ResponseHandler.generate()
+                    .data(tokenDTO.getAccessToken())
+                    .status(HttpStatus.OK)
+                    .build();
+        }
     }
 }

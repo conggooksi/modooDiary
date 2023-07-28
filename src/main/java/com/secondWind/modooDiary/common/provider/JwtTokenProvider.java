@@ -1,6 +1,7 @@
 package com.secondWind.modooDiary.common.provider;
 
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
+import com.secondWind.modooDiary.common.enumerate.Authority;
 import com.secondWind.modooDiary.common.exception.CustomAuthException;
 import com.secondWind.modooDiary.common.exception.code.AuthErrorCode;
 import com.secondWind.modooDiary.common.result.JsonResultData;
@@ -35,6 +36,33 @@ public class JwtTokenProvider {
     public JwtTokenProvider(@Value("${spring.jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public TokenDTO generateTokenDTOByGoogle(Authority authority, Long id, String nickName) {
+        long now = (new Date()).getTime();
+
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(id.toString())
+                .claim(AUTHORITIES_KEY, authority.name())
+                .claim("nickName", nickName)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+        String refreshToken = Jwts.builder()
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return TokenDTO.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+                .refreshToken(refreshToken)
+                .refreshTokenExpiresIn(refreshTokenExpiresIn.getTime())
+                .build();
     }
 
     public TokenDTO generateTokenDTO(Authentication authentication, String nickName) {

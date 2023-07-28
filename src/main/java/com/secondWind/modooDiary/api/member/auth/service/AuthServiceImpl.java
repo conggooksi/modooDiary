@@ -9,6 +9,7 @@ import com.secondWind.modooDiary.api.member.auth.domain.spec.PasswordSpecificati
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
 import com.secondWind.modooDiary.common.component.GoogleLogin;
+import com.secondWind.modooDiary.common.enumerate.Authority;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.CustomAuthException;
 import com.secondWind.modooDiary.common.exception.code.AuthErrorCode;
@@ -159,18 +160,36 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public TokenDTO getGoogleInfo(String authCode) {
+    public TokenDTO loginByGoogle(String authCode) {
         GoogleInfoResponse googleInfoResponse = googleLogin.getGoogleInfo(authCode);
         String email=googleInfoResponse.getEmail();
 
         Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
-
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
+            return getTokenDTOByGoogle(member);
         }
 
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setAccessToken(email);
+        return tokenDTO;
+    }
 
-        return null;
+    private TokenDTO getTokenDTOByGoogle(Member member) {
+        Authority authority = member.getAuthority();
+        String nickName = member.getNickName();
+        Long id = member.getId();
+        TokenDTO tokenDTO = jwtTokenProvider.generateTokenDTOByGoogle(authority, id, nickName);
+
+        redisTemplate.opsForValue()
+                .set("RT:" + tokenDTO.getAccessToken(),
+                        tokenDTO.getRefreshToken(),
+                        tokenDTO.getRefreshTokenExpiresIn(),
+                        TimeUnit.MILLISECONDS);
+
+        member.changeLastAccessToken(tokenDTO.getAccessToken());
+
+        return tokenDTO;
     }
 
     private TokenDTO getTokenDTO(Authentication authentication) {
