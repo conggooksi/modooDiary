@@ -8,6 +8,7 @@ import com.secondWind.modooDiary.api.member.auth.service.EmailService;
 import com.secondWind.modooDiary.common.component.GoogleLogin;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
@@ -164,6 +165,7 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
+    @Hidden
     @GetMapping("/oauth2/google")
     public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
         TokenDTO tokenDTO = authService.loginByGoogle(authCode);
