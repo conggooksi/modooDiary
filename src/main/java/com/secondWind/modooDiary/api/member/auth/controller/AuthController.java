@@ -5,7 +5,7 @@ import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.api.member.auth.service.EmailService;
-import com.secondWind.modooDiary.common.component.GoogleLogin;
+import com.secondWind.modooDiary.common.component.SocialLogin;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -38,10 +38,11 @@ public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
     @Value("${google.client.id}")
     private String googleClientId;
+    @Value("${naver.client.id}")
+    private String naverClientId;
     private final AuthService authService;
     private final EmailService emailService;
     private Map<String, String> confirmEmail;
-    private final GoogleLogin googleLogin;
 
     @PostConstruct
     public void postConstruct() {
@@ -165,10 +166,40 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
+    @Operation(summary = "네이버 로그인 API")
+    @GetMapping("/naver")
+    public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
+        String reqUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + naverClientId
+                + "&redirect_uri=http://localhost:8080/api/auth/oauth2/naver";
+
+        response.sendRedirect(reqUrl);
+    }
+
     @Hidden
     @GetMapping("/oauth2/google")
     public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
         TokenDTO tokenDTO = authService.loginByGoogle(authCode);
+
+        if (tokenDTO.getRefreshToken() != null) {
+            return ResponseHandler.generate()
+                    .data(tokenDTO)
+                    .status(HttpStatus.OK)
+                    .build();
+        } else {
+            // TODO 뒷단에서 email을 굳이 담아야 할까? 굳이 redirect를 해야 할까?
+            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
+
+            return ResponseHandler.generate()
+                    .data(tokenDTO.getAccessToken())
+                    .status(HttpStatus.OK)
+                    .build();
+        }
+    }
+
+    @Hidden
+    @GetMapping("/oauth2/naver")
+    public ResponseEntity<?> loginByNaver(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
+        TokenDTO tokenDTO = authService.loginByNaver(authCode);
 
         if (tokenDTO.getRefreshToken() != null) {
             return ResponseHandler.generate()

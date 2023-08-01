@@ -30,7 +30,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
         "/api/auth/login", "/api/auth/signup", "/api/auth/reissue", "/swagger-ui/**", "/v3/api-docs/**",
-            "/api/auth/oauth2/google"
+            "/api/auth/google", "/api/auth/naver"
     };
 
     @Bean

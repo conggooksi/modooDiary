@@ -2,10 +2,7 @@ package com.secondWind.modooDiary.api.member.auth.service;
 
 import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 
 public interface AuthService {
     MemberResponseDTO signup(MemberJoinDTO memberJoinDTO);
@@ -19,4 +16,6 @@ public interface AuthService {
     void updatePassword(PasswordUpdateRequest passwordUpdateRequest);
 
     TokenDTO loginByGoogle(String authCode);
+
+    TokenDTO loginByNaver(String authCode);
 }

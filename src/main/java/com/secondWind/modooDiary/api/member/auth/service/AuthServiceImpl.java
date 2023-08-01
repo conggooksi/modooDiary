@@ -8,7 +8,7 @@ import com.secondWind.modooDiary.api.member.auth.domain.spec.EmailSpecification;
 import com.secondWind.modooDiary.api.member.auth.domain.spec.PasswordSpecification;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
-import com.secondWind.modooDiary.common.component.GoogleLogin;
+import com.secondWind.modooDiary.common.component.SocialLogin;
 import com.secondWind.modooDiary.common.enumerate.Authority;
 import com.secondWind.modooDiary.common.exception.ApiException;
 import com.secondWind.modooDiary.common.exception.CustomAuthException;
@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService{
     private final AdminSpecification adminSpecification;
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
-    private final GoogleLogin googleLogin;
+    private final SocialLogin socialLogin;
 
     @Override
     @Transactional
@@ -161,8 +161,24 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public TokenDTO loginByGoogle(String authCode) {
-        GoogleInfoResponse googleInfoResponse = googleLogin.getGoogleInfo(authCode);
+        GoogleInfoResponse googleInfoResponse = socialLogin.getGoogleInfo(authCode);
         String email=googleInfoResponse.getEmail();
+
+        Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            return getTokenDTOByGoogle(member);
+        }
+
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setAccessToken(email);
+        return tokenDTO;
+    }
+
+    @Override
+    public TokenDTO loginByNaver(String authCode) {
+        NaverInfoResponse.Response naverInfo = socialLogin.getNaverInfo(authCode);
+        String email = naverInfo.getEmail();
 
         Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
         if (optionalMember.isPresent()) {
