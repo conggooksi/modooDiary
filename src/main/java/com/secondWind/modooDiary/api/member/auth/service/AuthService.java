@@ -18,4 +18,6 @@ public interface AuthService {
     TokenDTO loginByGoogle(String authCode);
 
     TokenDTO loginByNaver(String authCode);
+
+    TokenDTO loginByKakao(String authCode);
 }

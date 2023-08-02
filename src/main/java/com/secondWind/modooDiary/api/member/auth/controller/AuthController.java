@@ -40,6 +40,8 @@ public class AuthController {
     private String googleClientId;
     @Value("${naver.client.id}")
     private String naverClientId;
+    @Value("${kakao.client.id}")
+    private String kakaoClientId;
     private final AuthService authService;
     private final EmailService emailService;
     private Map<String, String> confirmEmail;
@@ -166,12 +168,20 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
-    @Operation(summary = "네이버 로그인 API")
+    @Operation(summary = "(네이버 로그인은 추가적인 비밀번호를 받으면 안되서 추가적인 작업 필요) 네이버 로그인 API")
     @GetMapping("/naver")
     public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
         String reqUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + naverClientId
                 + "&redirect_uri=http://localhost:8080/api/auth/oauth2/naver";
 
+        response.sendRedirect(reqUrl);
+    }
+
+    @Operation(summary = "(이메일이 필수가 되야 하는데 그럴려면 비즈 앱에 등록해야 함. 안함. 그래서 선택적 동의로 나옴) 카카오 로그인 API")
+    @GetMapping("/kakao")
+    public void redirectToKakaoLogin(HttpServletResponse response) throws IOException {
+        String reqUrl = "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoClientId
+                + "&redirect_uri=http://localhost:8080/api/auth/oauth2/kakao&response_type=code";
         response.sendRedirect(reqUrl);
     }
 
@@ -186,7 +196,9 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build();
         } else {
-            // TODO 뒷단에서 email을 굳이 담아야 할까? 굳이 redirect를 해야 할까?
+            // TODO 뒷단에서 email을 굳이 담아야 할까?(자동으로 id에 email이 들어가게 하려면 이메일을 보내줘야 할까?에 대한 얘기
+            //  accesstoken 대신에 이메일 담아서 리턴해주는 중) 굳이 redirect를 해야 할까?
+
             response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
 
             return ResponseHandler.generate()
@@ -207,7 +219,30 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build();
         } else {
-            // TODO 뒷단에서 email을 굳이 담아야 할까? 굳이 redirect를 해야 할까?
+            // TODO 뒷단에서 email을 굳이 담아야 할까?(자동으로 id에 email이 들어가게 하려면 이메일을 보내줘야 할까?에 대한 얘기
+            //  accesstoken 대신에 이메일 담아서 리턴해주는 중) 굳이 redirect를 해야 할까?
+            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
+
+            return ResponseHandler.generate()
+                    .data(tokenDTO.getAccessToken())
+                    .status(HttpStatus.OK)
+                    .build();
+        }
+    }
+
+    @Hidden
+    @GetMapping("/oauth2/kakao")
+    public ResponseEntity<?> loginByKakao(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
+        TokenDTO tokenDTO = authService.loginByKakao(authCode);
+
+        if (tokenDTO.getRefreshToken() != null) {
+            return ResponseHandler.generate()
+                    .data(tokenDTO)
+                    .status(HttpStatus.OK)
+                    .build();
+        } else {
+            // TODO 뒷단에서 email을 굳이 담아야 할까?(자동으로 id에 email이 들어가게 하려면 이메일을 보내줘야 할까?에 대한 얘기
+            //  accesstoken 대신에 이메일 담아서 리턴해주는 중) 굳이 redirect를 해야 할까?
             response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
 
             return ResponseHandler.generate()

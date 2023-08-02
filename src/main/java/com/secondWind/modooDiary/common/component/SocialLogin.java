@@ -1,9 +1,6 @@
 package com.secondWind.modooDiary.common.component;
 
-import com.secondWind.modooDiary.api.member.auth.domain.dto.GoogleInfoResponse;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.GoogleResponse;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.NaverInfoResponse;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.NaverResponse;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -23,6 +20,8 @@ public class SocialLogin {
     private String naverClientId;
     @Value("${naver.client.pw}")
     private String naverClientPw;
+    @Value("${kakao.client.id}")
+    private String kakaoClientId;
 
     public GoogleResponse getTokenByGoogleLogin(String authCode) {
         String url = "https://oauth2.googleapis.com/token";
@@ -89,5 +88,37 @@ public class SocialLogin {
                 .block();
 
         return naverInfoResponse.getResponse();
+    }
+
+    public KakaoResponse getTokenByKakaoLogin(String authCode) {
+        String url = "https://kauth.kakao.com";
+
+        return WebClient.create(url)
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/oauth/token")
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", kakaoClientId)
+                        .queryParam("code", authCode)
+                        .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(KakaoResponse.class)
+                .block();
+    }
+
+    public KakaoInfoResponse getKakaoInfo(String authCode) {
+        String url = "https://kapi.kakao.com";
+
+        return WebClient.create(url)
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v2/user/me")
+                        .build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + this.getTokenByKakaoLogin(authCode).getAccess_token())
+                .retrieve()
+                .bodyToMono(KakaoInfoResponse.class)
+                .block();
     }
 }

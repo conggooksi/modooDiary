@@ -191,6 +191,22 @@ public class AuthServiceImpl implements AuthService{
         return tokenDTO;
     }
 
+    @Override
+    public TokenDTO loginByKakao(String authCode) {
+        KakaoInfoResponse kakaoInfo = socialLogin.getKakaoInfo(authCode);
+        String email = kakaoInfo.getKakao_account().getEmail();
+
+        Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            return getTokenDTOByGoogle(member);
+        }
+
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setAccessToken(email);
+        return tokenDTO;
+    }
+
     private TokenDTO getTokenDTOByGoogle(Member member) {
         Authority authority = member.getAuthority();
         String nickName = member.getNickName();
