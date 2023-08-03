@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.secondWind.modooDiary.api.diary.domain.request.SearchDiary;
 import com.secondWind.modooDiary.api.diary.domain.response.DiaryResponse;
+import com.secondWind.modooDiary.api.quiz.domain.response.DrawingQuizResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -84,6 +85,25 @@ public class DiaryRepositoryImpl implements DiaryCustomRepository{
                 .leftJoin(diary.drawing, drawing)
                 .where(diary.id.eq(diaryId))
                 .fetchOne());
+    }
+
+    @Override
+    public List<DrawingQuizResponse> getDrawingQuiz() {
+        return queryFactory.select(Projections.constructor(DrawingQuizResponse.class,
+                        diary.id,
+                        member.nickName,
+                        diary.title,
+                        weather.description,
+                        diary.content,
+                        diary.drawing,
+                        diary.createdDate))
+                .from(diary)
+                .innerJoin(diary.member, member)
+                .innerJoin(diary.weather, weather)
+                .leftJoin(diary.drawing, drawing)
+                .where(diary.isDeleted.eq(0),
+                        diary.drawing.isNotNull())
+                .fetch();
     }
 
     private OrderSpecifier<?> diarySort(PageRequest pageRequest) {
