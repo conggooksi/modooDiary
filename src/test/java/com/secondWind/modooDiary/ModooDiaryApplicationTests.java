@@ -1,21 +1,13 @@
 package com.secondWind.modooDiary;
 
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.UUID;
-
-@SpringBootTest
-class ModooDiaryApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-	@Test
-	void makeSecretKey() {
-		String secretKey = UUID.randomUUID().toString();
-		System.out.println("secretKey = " + secretKey);
-	}
+@SpringBootTest@AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Slf4j
+public class ModooDiaryApplicationTests {
 
 }

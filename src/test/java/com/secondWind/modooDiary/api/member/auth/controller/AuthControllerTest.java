@@ -1,46 +1,82 @@
 package com.secondWind.modooDiary.api.member.auth.controller;
 
-import com.secondWind.modooDiary.api.diary.domain.spec.AdminSpecification;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.spec.PasswordSpecification;
-import com.secondWind.modooDiary.api.member.auth.service.AuthService;
-import com.secondWind.modooDiary.api.member.auth.service.AuthServiceImpl;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.secondWind.modooDiary.api.diary.service.DiaryService;
+import com.secondWind.modooDiary.api.diary.service.DiaryServiceImpl;
 import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
-import com.secondWind.modooDiary.common.provider.JwtTokenProvider;
+import com.secondWind.modooDiary.api.member.repository.MemberRepositoryImpl;
+import com.secondWind.modooDiary.api.quiz.repository.QuizRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import java.util.Base64;
+import java.util.Optional;
 
-//class AuthControllerTest {
-//    private PasswordEncoder passwordEncoder = Mockito.mock(PasswordEncoder.class);
-//    private  MemberRepository memberRepository = Mockito.mock(MemberRepository.class);
-//    private  PasswordSpecification passwordSpecification = Mockito.mock(PasswordSpecification.class);
-//    private  AuthenticationManagerBuilder authenticationManagerBuilder = Mockito.mock(AuthenticationManagerBuilder.class);
-//    private  AdminSpecification adminSpecification = Mockito.mock(AdminSpecification.class);
-//    private  JwtTokenProvider jwtTokenProvider = Mockito.mock(JwtTokenProvider.class);
-//    private  StringRedisTemplate redisTemplate = Mockito.mock(StringRedisTemplate.class);
-//
-//    @Test
-//    void signUpTest() {
-//        AuthService authService = new AuthServiceImpl(passwordEncoder, memberRepository, passwordSpecification, authenticationManagerBuilder, adminSpecification, jwtTokenProvider, redisTemplate);
-//        MemberJoinDTO memberJoinDTO = new MemberJoinDTO("kuk@gmail.com", "1234567", "테스트코드", "SEOUL");
-//
-//        Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
-//
-//        when(memberRepository.save(member)).thenAnswer((Answer<Member>) invocation -> {
-//            Member savedMember = invocation.getArgument(0);
-//            return savedMember;
-//        });
-//
-//        Member newMember = memberRepository.save(member);
-//
-//        System.out.println("member = " + newMember.getNickName());
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+public class AuthControllerTest {
+
+    @Autowired
+    private MockMvc mvc;
+//    @Autowired
+//    public AuthControllerTest(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
 //    }
-//}
+    @Autowired
+    private DiaryServiceImpl diaryService;
+
+    @Autowired
+    private MemberRepository memberRepository;
+//    @MockBean
+//    private QuizRepository quizRepository;
+
+    private final static String BASE_URL = "/api/auth";
+    @Test
+    @Transactional
+    @DisplayName("로그인")
+    public void login() throws Exception {
+        // when
+        String url = "/login";
+        String loginId = "kimgeonkuk@gmail.com";
+        String password = "1234";
+        String originalInput = loginId + ":" + password;
+        String encodedIdAndPw = Base64.getEncoder().encodeToString(originalInput.getBytes());
+
+        MvcResult mvcResult = mvc.perform(post(BASE_URL + url)
+                        .header(HttpHeaders.ACCEPT, "application/json;charset=UTF-8")
+                        .header(HttpHeaders.AUTHORIZATION, "Basic " + encodedIdAndPw))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        // then
+        JsonElement data = JsonParser.parseString(mvcResult.getResponse().getContentAsString()).getAsJsonObject().get("data");
+        log.info(data.toString());
+//    parser.parse(mvcResult.getResponse().getContentAsString()).getAsJsonObject().get("data");
+
+//    assertThat(parser.parse(mvcResult.getResponse().getContentAsString()).getAsJsonObject().get("data").getAsLong())
+//            .isInstanceOf(Long.class);
+    }
+
+}
