@@ -41,8 +41,8 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> exceptionHandler(HttpServletRequest request, final CustomAuthException e) {
         return ResponseHandler.failResultGenerate()
                 .status(HttpStatus.UNAUTHORIZED)
-                .errorMessage(e.getErrorEntity().getError().getCode())
-                .errorCode(e.getErrorEntity().getError().getMessage())
+                .errorMessage(e.getErrorEntity().getError().getMessage())
+                .errorCode(e.getErrorEntity().getError().getCode())
                 .build();
     }
 

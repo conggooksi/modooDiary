@@ -44,7 +44,7 @@ public class JwtTokenProvider {
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(id.toString())
-                .claim(AUTHORITIES_KEY, authority.name())
+                .claim(AUTHORITIES_KEY, authority)
                 .claim("nickName", nickName)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)

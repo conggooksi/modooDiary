@@ -102,10 +102,6 @@ tasks.withType(JavaCompile) {
 	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
-clean.doLast {
-	file(querydslDir).deleteDir()
-}
-
 task copyPrivate(type: Copy) {
 	copy {
 		from './submodule-modooDiary'
@@ -114,7 +110,11 @@ task copyPrivate(type: Copy) {
 	}
 	copy {
 		from './submodule-modooDiary'
-		include "*.yml", "*.json"
+		include "*.yml"
 		into 'src/test/resources'
 	}
+}
+
+clean.doLast {
+	file(querydslDir).deleteDir()
 }

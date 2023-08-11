@@ -2,57 +2,44 @@ package com.secondWind.modooDiary.api.member.auth.controller;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.secondWind.modooDiary.api.diary.service.DiaryService;
 import com.secondWind.modooDiary.api.diary.service.DiaryServiceImpl;
-import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.api.member.repository.MemberRepository;
-import com.secondWind.modooDiary.api.member.repository.MemberRepositoryImpl;
 import com.secondWind.modooDiary.api.quiz.repository.QuizRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
-import java.util.Optional;
 
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class AuthControllerTest {
 
     @Autowired
     private MockMvc mvc;
-//    @Autowired
-//    public AuthControllerTest(MemberRepository memberRepository) {
-//        this.memberRepository = memberRepository;
-//    }
     @Autowired
     private DiaryServiceImpl diaryService;
 
-    @Autowired
+    @MockBean
     private MemberRepository memberRepository;
-//    @MockBean
-//    private QuizRepository quizRepository;
+    @MockBean
+    private QuizRepository quizRepository;
 
     private final static String BASE_URL = "/api/auth";
+
     @Test
     @Transactional
     @DisplayName("로그인")
