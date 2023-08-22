@@ -18,6 +18,7 @@ import com.secondWind.modooDiary.common.provider.JwtTokenProvider;
 import com.secondWind.modooDiary.common.result.JsonResultData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,6 +46,8 @@ public class AuthServiceImpl implements AuthService{
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
     private final SocialLogin socialLogin;
+    @Value("${naver.memberPW}")
+    private String naverMemberPW;
 
     @Override
     @Transactional
@@ -167,7 +170,7 @@ public class AuthServiceImpl implements AuthService{
         Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            return getTokenDTOByGoogle(member);
+            return getTokenDTOBySocialLogin(member);
         }
 
         TokenDTO tokenDTO = new TokenDTO();
@@ -176,6 +179,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public TokenDTO loginByNaver(String authCode) {
         NaverInfoResponse.Response naverInfo = socialLogin.getNaverInfo(authCode);
         String email = naverInfo.getEmail();
@@ -183,12 +187,15 @@ public class AuthServiceImpl implements AuthService{
         Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            return getTokenDTOByGoogle(member);
-        }
+            return getTokenDTOBySocialLogin(member);
+        } else {
+            MemberJoinDTO memberJoinDTOByNaver = new MemberJoinDTO(email, naverMemberPW, naverInfo.getNickname(), "");
+            Member member = memberJoinDTOByNaver.toMember(memberJoinDTOByNaver, passwordEncoder);
+            memberRepository.save(member);
 
-        TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setAccessToken(email);
-        return tokenDTO;
+            MemberLoginDTO memberLoginDTOByNaver = new MemberLoginDTO(email, naverMemberPW, false);
+            return login(memberLoginDTOByNaver);
+        }
     }
 
     @Override
@@ -199,7 +206,7 @@ public class AuthServiceImpl implements AuthService{
         Optional<Member> optionalMember = memberRepository.findByEmailAndIsDeletedFalse(email);
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            return getTokenDTOByGoogle(member);
+            return getTokenDTOBySocialLogin(member);
         }
 
         TokenDTO tokenDTO = new TokenDTO();
@@ -207,7 +214,7 @@ public class AuthServiceImpl implements AuthService{
         return tokenDTO;
     }
 
-    private TokenDTO getTokenDTOByGoogle(Member member) {
+    private TokenDTO getTokenDTOBySocialLogin(Member member) {
         Authority authority = member.getAuthority();
         String nickName = member.getNickName();
         Long id = member.getId();

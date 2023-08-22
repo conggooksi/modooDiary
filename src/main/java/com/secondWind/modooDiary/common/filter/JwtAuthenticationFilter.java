@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 if (ObjectUtils.isEmpty(isLogout)) {
                     Authentication authentication = jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                }else{
+                } else {
                     request.setAttribute("exception", AuthErrorCode.LOG_OUT_USER.getCode());
                 }
             }

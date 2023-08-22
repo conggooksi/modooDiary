@@ -168,7 +168,7 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
-    @Operation(summary = "(네이버 로그인은 추가적인 비밀번호를 받으면 안되서 추가적인 작업 필요) 네이버 로그인 API")
+    @Operation(summary = "네이버 로그인 API")
     @GetMapping("/naver")
     public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
         String reqUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + naverClientId
@@ -196,9 +196,6 @@ public class AuthController {
                     .status(HttpStatus.OK)
                     .build();
         } else {
-            // TODO 뒷단에서 email을 굳이 담아야 할까?(자동으로 id에 email이 들어가게 하려면 이메일을 보내줘야 할까?에 대한 얘기
-            //  accesstoken 대신에 이메일 담아서 리턴해주는 중) 굳이 redirect를 해야 할까?
-
             response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
 
             return ResponseHandler.generate()
@@ -213,21 +210,10 @@ public class AuthController {
     public ResponseEntity<?> loginByNaver(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
         TokenDTO tokenDTO = authService.loginByNaver(authCode);
 
-        if (tokenDTO.getRefreshToken() != null) {
-            return ResponseHandler.generate()
-                    .data(tokenDTO)
-                    .status(HttpStatus.OK)
-                    .build();
-        } else {
-            // TODO 뒷단에서 email을 굳이 담아야 할까?(자동으로 id에 email이 들어가게 하려면 이메일을 보내줘야 할까?에 대한 얘기
-            //  accesstoken 대신에 이메일 담아서 리턴해주는 중) 굳이 redirect를 해야 할까?
-            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
-
-            return ResponseHandler.generate()
-                    .data(tokenDTO.getAccessToken())
-                    .status(HttpStatus.OK)
-                    .build();
-        }
+        return ResponseHandler.generate()
+                .data(tokenDTO)
+                .status(HttpStatus.OK)
+                .build();
     }
 
     @Hidden
