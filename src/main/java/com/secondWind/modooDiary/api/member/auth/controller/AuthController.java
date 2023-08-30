@@ -164,7 +164,7 @@ public class AuthController {
     @GetMapping("/google")
     public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
         String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
-                + "&redirect_uri=http://mingky.me:20001/api/auth/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
+                + "&redirect_uri=http://mingky.me:22001/api/auth/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
         response.sendRedirect(reqUrl);
     }
 
