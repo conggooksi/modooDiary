@@ -162,10 +162,29 @@ public class AuthController {
 
     @Operation(summary = "구글 로그인 API")
     @GetMapping("/google")
-    public void redirectToGoogleLogin(HttpServletResponse response) throws IOException {
-        String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
-                + "&redirect_uri=http://mingky.me:22001/api/auth/oauth2/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
-        response.sendRedirect(reqUrl);
+    public ResponseEntity<?> redirectToGoogleLogin(HttpServletResponse response, @RequestParam(value = "code", required = false) String authCode) throws IOException {
+        if (authCode == null) {
+            String reqUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId
+                    + "&redirect_uri=http://mingky.me:22001/api/auth/google&response_type=code&scope=email%20profile%20openid&access_type=offline";
+            response.sendRedirect(reqUrl);
+            return null;
+        } else {
+            TokenDTO tokenDTO = authService.loginByGoogle(authCode);
+
+            if (tokenDTO.getRefreshToken() != null) {
+                return ResponseHandler.generate()
+                        .data(tokenDTO)
+                        .status(HttpStatus.OK)
+                        .build();
+            } else {
+                response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
+
+                return ResponseHandler.generate()
+                        .data(tokenDTO.getAccessToken())
+                        .status(HttpStatus.OK)
+                        .build();
+            }
+        }
     }
 
     @Operation(summary = "네이버 로그인 API")
@@ -185,25 +204,25 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
-    @Hidden
-    @GetMapping("/oauth2/google")
-    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
-        TokenDTO tokenDTO = authService.loginByGoogle(authCode);
-
-        if (tokenDTO.getRefreshToken() != null) {
-            return ResponseHandler.generate()
-                    .data(tokenDTO)
-                    .status(HttpStatus.OK)
-                    .build();
-        } else {
-            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
-
-            return ResponseHandler.generate()
-                    .data(tokenDTO.getAccessToken())
-                    .status(HttpStatus.OK)
-                    .build();
-        }
-    }
+//    @Hidden
+//    @GetMapping("/oauth2/google")
+//    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
+//        TokenDTO tokenDTO = authService.loginByGoogle(authCode);
+//
+//        if (tokenDTO.getRefreshToken() != null) {
+//            return ResponseHandler.generate()
+//                    .data(tokenDTO)
+//                    .status(HttpStatus.OK)
+//                    .build();
+//        } else {
+//            response.sendRedirect("https://modoo-diary.vercel.app/auth/signup");
+//
+//            return ResponseHandler.generate()
+//                    .data(tokenDTO.getAccessToken())
+//                    .status(HttpStatus.OK)
+//                    .build();
+//        }
+//    }
 
     @Hidden
     @GetMapping("/oauth2/naver")
