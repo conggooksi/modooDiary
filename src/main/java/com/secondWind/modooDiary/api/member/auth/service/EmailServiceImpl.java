@@ -40,8 +40,8 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             throw ApiException.builder()
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .errorCode(AuthErrorCode.FAIL_SEND_CONFIMEAIL.getCode())
-                    .errorMessage(AuthErrorCode.FAIL_SEND_CONFIMEAIL.getMessage())
+                    .errorCode(AuthErrorCode.FAIL_SEND_CONFIRM_EMAIL.getCode())
+                    .errorMessage(AuthErrorCode.FAIL_SEND_CONFIRM_EMAIL.getMessage())
                     .build();
         }
 
