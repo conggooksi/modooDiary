@@ -2,10 +2,7 @@ package com.secondWind.modooDiary.api.member.auth.controller;
 
 import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberResponseDTO;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
-import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
+import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
 import com.secondWind.modooDiary.api.member.auth.service.EmailService;
 import com.secondWind.modooDiary.common.exception.ApiException;
@@ -145,9 +142,9 @@ public class AuthController {
     }
 
     @Operation(summary = "이메일발송 API")
-    @GetMapping("/emailConfirm")
-    public ResponseEntity<?> emailConfirm(@RequestParam String email) {
-        String confirmKey = emailService.sendEmailConfirm(email);
+    @PostMapping("/emailConfirm")
+    public ResponseEntity<?> emailConfirm(@RequestBody AuthenticationEmailRequest authenticationEmailRequest) {
+        String confirmKey = emailService.sendEmailConfirm(authenticationEmailRequest.getAuthenticationEmail());
         //
         return ResponseHandler.generate()
                 .data(confirmKey)
