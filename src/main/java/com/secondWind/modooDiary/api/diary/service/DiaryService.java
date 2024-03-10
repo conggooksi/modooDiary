@@ -19,4 +19,6 @@ public interface DiaryService {
     void updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest);
 
     void updateSticker(StickerRequest stickerRequest);
+
+    void updateStickerV2(StickerRequestV2 stickerRequest);
 }

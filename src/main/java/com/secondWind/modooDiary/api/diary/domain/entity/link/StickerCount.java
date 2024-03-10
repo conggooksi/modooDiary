@@ -2,7 +2,6 @@ package com.secondWind.modooDiary.api.diary.domain.entity.link;
 
 import com.secondWind.modooDiary.api.diary.domain.entity.Diary;
 import com.secondWind.modooDiary.api.diary.domain.request.StickerRequest;
-import com.secondWind.modooDiary.api.member.domain.entity.Member;
 import com.secondWind.modooDiary.common.entity.BaseEntity;
 import com.secondWind.modooDiary.common.enumerate.Yn;
 import jakarta.persistence.*;
@@ -54,5 +53,13 @@ public class StickerCount extends BaseEntity {
         if (Yn.Y.equals(stickerRequest.getUnlikeYn())) {
             unlikeCount++;
         }
+    }
+
+    public void plusRecommend(Integer recommend) {
+        this.recommendCount = recommend;
+    }
+
+    public void plusUnlike(Integer unlike) {
+        this.unlikeCount = unlike;
     }
 }

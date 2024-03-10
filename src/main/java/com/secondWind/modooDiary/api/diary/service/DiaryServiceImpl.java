@@ -276,6 +276,30 @@ public class DiaryServiceImpl implements DiaryService {
         findStickerCount.plusSticker(stickerRequest);
     }
 
+    @Override
+    @Transactional
+    public void updateStickerV2(StickerRequestV2 stickerRequest) {
+        Diary diary = findDiary(stickerRequest.getDiaryId());
+
+        StickerCount findStickerCount = stickerCountRepository.findByDiaryId(stickerRequest.getDiaryId());
+        if (findStickerCount == null) {
+            StickerCount stickerCount = StickerCount.createStickerCountBuilder()
+                    .diary(diary)
+                    .build();
+
+            findStickerCount = stickerCountRepository.save(stickerCount);
+        }
+
+        Integer recommend = stickerRequest.getRecommend();
+        if (recommend != null && recommend > 0) {
+            findStickerCount.plusRecommend(findStickerCount.getRecommendCount() + recommend);
+        }
+        Integer unlike = stickerRequest.getUnlike();
+        if (unlike != null && unlike > 0) {
+            findStickerCount.plusUnlike(findStickerCount.getUnlikeCount() + unlike);
+        }
+    }
+
     private Member findMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(
                 () -> ApiException.builder()

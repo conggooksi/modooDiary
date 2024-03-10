@@ -78,6 +78,7 @@ public class DiaryController {
                 .build();
     }
 
+    // 추천 하나만 있을 줄 알고 만들었던 거
     @Operation(summary = "일기 좋아요 API")
     @PutMapping("/recommend")
     public ResponseEntity<?> updateDiaryRecommend(DiaryRecommendRequest diaryRecommendRequest) {
@@ -92,6 +93,16 @@ public class DiaryController {
     @PutMapping("/sticker")
     public ResponseEntity<?> updateSticker(StickerRequest stickerRequest) {
         diaryService.updateSticker(stickerRequest);
+        return ResponseHandler.generate()
+                .data(null)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    @Operation(summary = "스티커 API")
+    @PutMapping("/sticker/v2")
+    public ResponseEntity<?> updateStickerV2(StickerRequestV2 stickerRequest) {
+        diaryService.updateStickerV2(stickerRequest);
         return ResponseHandler.generate()
                 .data(null)
                 .status(HttpStatus.OK)
