@@ -191,7 +191,7 @@ public class AuthController {
     @GetMapping("/naver")
     public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
         String reqUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + naverClientId
-                + "&redirect_uri=http://localhost:8080/api/auth/oauth2/naver";
+                + "&redirect_uri=https://xn--oh5bq8f.tv/oauth/naver ";
 
         response.sendRedirect(reqUrl);
     }
