@@ -204,11 +204,16 @@ public class AuthController {
         response.sendRedirect(reqUrl);
     }
 
-//    @Hidden
-//    @GetMapping("/oauth2/google")
-//    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
-//        TokenDTO tokenDTO = authService.loginByGoogle(authCode);
-//
+    @Hidden
+    @GetMapping("/oauth2/google")
+    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam(value = "code") String authCode) throws IOException {
+        TokenDTO tokenDTO = authService.loginByGoogle(authCode);
+
+        return ResponseHandler.generate()
+                .data(tokenDTO)
+                .status(HttpStatus.OK)
+                .build();
+
 //        if (tokenDTO.getRefreshToken() != null) {
 //            return ResponseHandler.generate()
 //                    .data(tokenDTO)
@@ -222,7 +227,7 @@ public class AuthController {
 //                    .status(HttpStatus.OK)
 //                    .build();
 //        }
-//    }
+    }
 
     @Hidden
     @GetMapping("/oauth2/naver")

@@ -48,6 +48,8 @@ public class AuthServiceImpl implements AuthService{
     private final SocialLogin socialLogin;
     @Value("${naver.memberPW}")
     private String naverMemberPW;
+    @Value("${google.memberPW}")
+    private String googleMemberPW;
 
     @Override
     @Transactional
@@ -163,6 +165,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public TokenDTO loginByGoogle(String authCode) {
         GoogleInfoResponse googleInfoResponse = socialLogin.getGoogleInfo(authCode);
         String email=googleInfoResponse.getEmail();
@@ -171,11 +174,14 @@ public class AuthServiceImpl implements AuthService{
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             return getTokenDTOBySocialLogin(member);
-        }
+        } else {
+            MemberJoinDTO memberJoinDTOByGoogle = new MemberJoinDTO(email, googleMemberPW, googleInfoResponse.getName(), "");
+            Member member = memberJoinDTOByGoogle.toMember(memberJoinDTOByGoogle, passwordEncoder);
+            memberRepository.save(member);
 
-        TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setAccessToken(email);
-        return tokenDTO;
+            MemberLoginDTO memberLoginDTOByGoogle = new MemberLoginDTO(email, googleMemberPW, false);
+            return login(memberLoginDTOByGoogle);
+        }
     }
 
     @Override
