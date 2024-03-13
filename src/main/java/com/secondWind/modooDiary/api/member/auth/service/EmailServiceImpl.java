@@ -31,8 +31,6 @@ public class EmailServiceImpl implements EmailService {
 
     private static final Long AUTHENTICATION_EMAIL_EXPIRE_TIME = 1000 * 60 * 30L;
     private final JavaMailSender javaMailSender;
-    @Value("${AdminMail.redirectUrl}")
-    private String redirectUrl;
     private final StringRedisTemplate redisTemplate;
     private final PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
 
