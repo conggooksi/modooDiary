@@ -4,8 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum AuthErrorCode {
-    FAILED_CONFIRM_EMAIL("FAILED_CONFIRM_EMAIL", "이메일 인증에 실패했습니다."),
-    FAIL_SEND_CONFIMEAIL("FAIL_SEND_CONFIMEAIL", "인증 이메일을 발송하는데 실패했습니다."),
+    FAIL_TO_LOAD_FROM_REDIS("FAIL_TO_LOAD_FROM_REDIS", "Redis에서 정보를 불러오는데 실패하였습니다."),
+    FAIL_TO_SIGN_UP("FAIL_TO_SIGN_UP", "회원 가입에 실패하였습니다."),
+    FAIL_SEND_CONFIRM_EMAIL("FAIL_SEND_CONFIRM_EMAIL", "인증 이메일을 발송하는데 실패했습니다."),
 
     EMAIL_NOT_ENOUGH_CONDITION("EMAIL_NOT_ENOUGH_CONDITION", "이메일 조건을 만족하지 못했습니다."),
     PASSWORD_NOT_ENOUGH_CONDITION("PASSWORD_NOT_ENOUGH_CONDITION", "패스워드 조건을 만족하지 못했습니다."),

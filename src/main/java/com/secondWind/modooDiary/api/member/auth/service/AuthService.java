@@ -5,7 +5,7 @@ import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.*;
 
 public interface AuthService {
-    MemberResponseDTO signup(MemberJoinDTO memberJoinDTO);
+    void signup(MemberJoinDTO memberJoinDTO);
 
     TokenDTO login(MemberLoginDTO memberLoginDTO);
 
@@ -20,4 +20,6 @@ public interface AuthService {
     TokenDTO loginByNaver(String authCode);
 
     TokenDTO loginByKakao(String authCode);
+
+    Long registerMember(String code);
 }

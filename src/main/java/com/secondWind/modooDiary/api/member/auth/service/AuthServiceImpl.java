@@ -1,5 +1,6 @@
 package com.secondWind.modooDiary.api.member.auth.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.secondWind.modooDiary.api.diary.domain.request.MemberLoginDTO;
 import com.secondWind.modooDiary.api.diary.domain.request.TokenDTO;
 import com.secondWind.modooDiary.api.diary.domain.spec.AdminSpecification;
@@ -50,11 +51,11 @@ public class AuthServiceImpl implements AuthService{
     private String naverMemberPW;
     @Value("${google.memberPW}")
     private String googleMemberPW;
+    private final EmailService emailService;
 
     @Override
     @Transactional
-    public MemberResponseDTO signup(MemberJoinDTO memberJoinDTO) {
-
+    public void signup(MemberJoinDTO memberJoinDTO) {
         emailSpecification.check(memberJoinDTO.getEmail());
         passwordSpecification.check(memberJoinDTO.getPassword());
 
@@ -74,10 +75,7 @@ public class AuthServiceImpl implements AuthService{
                     .build());
         }
 
-        Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
-        memberRepository.save(member);
-
-        return MemberResponseDTO.toResponse(member);
+        emailService.sendAuthenticationEmail(memberJoinDTO);
     }
 
     @Override
@@ -235,6 +233,29 @@ public class AuthServiceImpl implements AuthService{
         member.changeLastAccessToken(tokenDTO.getAccessToken());
 
         return tokenDTO;
+    }
+
+    @Override
+    @Transactional
+    public Long registerMember(String code) {
+        MemberJoinDTO memberJoinDTO;
+        try {
+            String memberJoinDTOFromRedis = redisTemplate.opsForValue().get(code);
+            ObjectMapper objectMapper = new ObjectMapper();
+            memberJoinDTO = objectMapper.readValue(memberJoinDTOFromRedis, MemberJoinDTO.class);
+        } catch (Exception e) {
+            log.error("Redis에서 정보를 불러오는데 실패하였습니다. " + e.getMessage());
+            throw ApiException.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .errorCode(AuthErrorCode.FAIL_TO_LOAD_FROM_REDIS.getCode())
+                    .errorMessage(AuthErrorCode.FAIL_TO_LOAD_FROM_REDIS.getMessage())
+                    .build();
+        }
+
+        Member member = memberJoinDTO.toMember(memberJoinDTO, passwordEncoder);
+        Member savedMember = memberRepository.save(member);
+
+        return savedMember.getId();
     }
 
     private TokenDTO getTokenDTO(Authentication authentication) {

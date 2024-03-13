@@ -1,6 +1,5 @@
 package com.secondWind.modooDiary.config;
 
-import com.secondWind.modooDiary.common.component.PrincipalOAuth2DetailsService;
 import com.secondWind.modooDiary.common.handler.JwtAccessDeniedHandler;
 import com.secondWind.modooDiary.common.handler.JwtAuthenticationEntryPoint;
 import com.secondWind.modooDiary.common.provider.JwtTokenProvider;
@@ -26,11 +25,11 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
-    private final PrincipalOAuth2DetailsService principalOAuth2DetailsService;
 
     private static final String[] AUTH_WHITELIST = {
         "/api/auth/login", "/api/auth/signup", "/api/auth/reissue", "/swagger-ui/**", "/v3/api-docs/**",
-            "/api/auth/google", "/api/auth/naver", "/api/auth/oauth2/google", "/api/auth/oauth2/naver"
+            "/api/auth/google", "/api/auth/naver", "/api/auth/oauth2/google", "/api/auth/oauth2/naver",
+            "/api/auth/check-code"
     };
 
     @Bean
