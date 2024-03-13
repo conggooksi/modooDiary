@@ -69,8 +69,6 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         String code = RandomStringUtils.randomNumeric(6);
 
-        String content = "";
-
         Resource resource = pathMatchingResourcePatternResolver.getResource("mail-template/content.html");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (InputStream inputStream = resource.getInputStream()) {
