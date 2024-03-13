@@ -32,7 +32,7 @@ public class SocialLogin {
                         .queryParam("client_id", googleClientId)
                         .queryParam("client_secret", googleClientPw)
                         .queryParam("code", authCode)
-                        .queryParam("redirect_uri", "http://localhost:3000/oauth/google")
+                        .queryParam("redirect_uri", "https://xn--oh5bq8f.tv/oauth/google")
                         .queryParam("grant_type", "authorization_code")
                         .build())
                 .retrieve()
