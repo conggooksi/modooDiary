@@ -29,12 +29,11 @@ import java.util.Base64;
 public class AuthController {
     private final String BASIC_PREFIX = "Basic ";
     private final AuthService authService;
-    private final EmailService emailService;
 
 
     @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(
+    public void signup(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @Valid @RequestBody MemberJoinDTO memberJoinDTO) {
 
@@ -51,18 +50,7 @@ public class AuthController {
             memberJoinDTO.setEmail(email);
             memberJoinDTO.setPassword(password);
 
-            MemberResponseDTO nickName = authService.signup(memberJoinDTO);
-
-            return ResponseHandler.generate()
-                    .data(nickName)
-                    .status(HttpStatus.CREATED)
-                    .build();
-        } else {
-            return ResponseHandler.failResultGenerate()
-                    .errorMessage(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getMessage())
-                    .errorCode(MemberErrorCode.ENTERED_ID_AND_PASSWORD.getCode())
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build();
+            authService.signup(memberJoinDTO);
         }
     }
 
@@ -141,14 +129,25 @@ public class AuthController {
                 .build();
     }
 
-    @Operation(summary = "이메일발송 API")
-    @PostMapping("/emailConfirm")
-    public ResponseEntity<?> emailConfirm(@RequestBody AuthenticationEmailRequest authenticationEmailRequest) {
-        String confirmKey = emailService.sendEmailConfirm(authenticationEmailRequest.getAuthenticationEmail());
-        //
+//    @Operation(summary = "이메일발송 API")
+//    @PostMapping("/emailConfirm")
+//    public ResponseEntity<?> emailConfirm(@RequestBody AuthenticationEmailRequest authenticationEmailRequest) {
+//        String confirmKey = emailService.sendEmailConfirm(authenticationEmailRequest.getAuthenticationEmail());
+//        //
+//        return ResponseHandler.generate()
+//                .data(confirmKey)
+//                .status(HttpStatus.OK)
+//                .build();
+//    }
+
+    @Operation(summary = "이메일 인증 API")
+    @PostMapping("/check-code")
+    public ResponseEntity<?> checkAuthenticationEmailCode(@RequestBody AuthenticationEmailRequest authenticationEmailRequest) {
+        Long memberId = authService.registerMember(authenticationEmailRequest.getCode());
+
         return ResponseHandler.generate()
-                .data(confirmKey)
-                .status(HttpStatus.OK)
+                .data(memberId)
+                .status(HttpStatus.CREATED)
                 .build();
     }
 }

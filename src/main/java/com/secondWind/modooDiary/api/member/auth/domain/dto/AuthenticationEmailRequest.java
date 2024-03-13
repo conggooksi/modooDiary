@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AuthenticationEmailRequest {
-    private String authenticationEmail;
+    private String code;
 }
