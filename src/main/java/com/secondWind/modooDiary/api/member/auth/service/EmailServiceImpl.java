@@ -84,7 +84,7 @@ public class EmailServiceImpl implements EmailService {
 
         }
 
-        content = outputStream.toString();
+        String content = outputStream.toString();
         content = content.replace("{code}", code);
 
         try {

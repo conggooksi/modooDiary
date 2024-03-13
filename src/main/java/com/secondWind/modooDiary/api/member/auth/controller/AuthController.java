@@ -7,13 +7,11 @@ import com.secondWind.modooDiary.api.member.auth.domain.dto.MemberJoinDTO;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.PasswordUpdateRequest;
 import com.secondWind.modooDiary.api.member.auth.domain.dto.TokenRequestDTO;
 import com.secondWind.modooDiary.api.member.auth.service.AuthService;
-import com.secondWind.modooDiary.api.member.auth.service.EmailService;
 import com.secondWind.modooDiary.common.exception.code.MemberErrorCode;
 import com.secondWind.modooDiary.common.result.ResponseHandler;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Tag(name = "auth", description = "인증 API")
 @RestController
