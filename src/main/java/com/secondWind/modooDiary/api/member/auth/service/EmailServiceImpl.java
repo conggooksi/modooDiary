@@ -79,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
         } catch (Exception e) {
-
+            log.error("이메일 템플릿을 불러오는데 실패하였습니다. {}", e.getMessage());
         }
 
         String content = outputStream.toString();

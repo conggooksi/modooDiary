@@ -44,7 +44,7 @@ public class DiscordNotificationAspect {
         text.append(result.getTitle());
         text.append("\\r\\n");
         text.append("일    기 : ");
-        text.append(result.getContent());
+        text.append(result.getContent().replaceAll("\n", "\\n"));
         discordWebhook.setContent(text.toString());
 
         if (result.getDisplayUrl() != null) {
